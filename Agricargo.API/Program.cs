@@ -1,5 +1,6 @@
 
 
+using Agricargo.Application.Services;
 using Agricargo.Domain.Interfaces;
 using Agricargo.Infrastructure.Repositories;
 
@@ -12,6 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IShipRepository, ShipRepository>();
+builder.Services.AddScoped<IShipService, ShipService>();
 
 var app = builder.Build();
 

@@ -5,11 +5,11 @@ using Agricargo.Domain.Interfaces;
 
 namespace Agricargo.Application.Services;
 
-public class ShipABM
+public class ShipService : IShipService
 {
-    private readonly IShipRepository _shipRepository;
+    public readonly IShipRepository _shipRepository;
 
-    public ShipABM(IShipRepository shipRepository)
+    public ShipService(IShipRepository shipRepository)
     {
         _shipRepository = shipRepository;
     }
@@ -18,6 +18,10 @@ public class ShipABM
     {
         var ship = _shipRepository.Get(id);
         return ship;
+    }
+    public List<Ship> Get()
+    {
+        return _shipRepository.Get();
     }
 
     public string Delete(int id)
@@ -31,14 +35,13 @@ public class ShipABM
         
     }
 
-    public void Add(string type, float capacity, string captain, bool isAvailable)
+    public void Add(string type, float capacity, string captain)
     {
         _shipRepository.Add(new Ship
         {
             TypeShip = type,
             Capacity = capacity,
-            Captain = captain,
-            Available = isAvailable
+            Captain = captain
         });
     }
 }

@@ -7,10 +7,10 @@ namespace Agricargo.Infrastructure.Repositories;
 public class ShipRepository : IShipRepository
 {
     private static readonly List<Ship> _ships = new List<Ship>();
-    private int _id = 0;
+    private static int _id = 0;
     public void Add(Ship ship)
     {
-        ship.ShipId = _id++;
+        ship.ShipId = ++_id;
         _ships.Add(ship);
     }
 
@@ -28,6 +28,11 @@ public class ShipRepository : IShipRepository
     public Ship Get(int id)
     {
         return _ships.FirstOrDefault(ship => ship.ShipId == id);
+    }
+
+    public List<Ship> Get()
+    {
+        return _ships;
     }
 
     public void Update(int id)

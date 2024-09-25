@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Agricargo.Application\Agricargo.Application.csproj" />
+    <ProjectReference Include="..\Agricargo.Infrastructure\Agricargo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

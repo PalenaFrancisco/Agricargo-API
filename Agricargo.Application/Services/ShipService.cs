@@ -7,7 +7,7 @@ namespace Agricargo.Application.Services;
 
 public class ShipService : IShipService
 {
-    public readonly IShipRepository _shipRepository;
+    private readonly IShipRepository _shipRepository;
 
     public ShipService(IShipRepository shipRepository)
     {

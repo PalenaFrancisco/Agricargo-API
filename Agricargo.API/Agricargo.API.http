@@ -1,0 +1,6 @@
+@Agricargo.API_HostAddress = http://localhost:5298
+
+GET {{Agricargo.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

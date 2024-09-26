@@ -15,6 +15,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IShipRepository, ShipRepository>();
 builder.Services.AddScoped<IShipService, ShipService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -27,6 +38,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors("AllowAllOrigins");
 
 app.MapControllers();
 

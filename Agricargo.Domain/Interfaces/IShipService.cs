@@ -14,7 +14,7 @@ namespace Agricargo.Application.Services
         public string Delete(int id);
 
 
-        public void Add(string type, float capacity, string captain);
+        public void Add(ShipCreateRequest shipService);
   
     }
 }

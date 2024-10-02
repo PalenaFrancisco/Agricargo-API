@@ -5,7 +5,7 @@ using Agricargo.Domain.Interfaces;
 
 namespace Agricargo.Application.Services;
 
-public class ShipService : IShipService
+public class ShipService 
 {
     private readonly IShipRepository _shipRepository;
 

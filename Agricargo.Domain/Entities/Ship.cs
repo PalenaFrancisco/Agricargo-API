@@ -14,6 +14,7 @@ public class Ship
     public string? TypeShip { get; set; }
     [Required]
     public float Capacity { get; set; }
+    [Required]
     public string? Captain { get; set; }
     public bool Available { get; set; } = true;
 }

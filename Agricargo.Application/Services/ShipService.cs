@@ -1,11 +1,12 @@
 ﻿
 
+using Agricargo.Application.Models.Requests;
 using Agricargo.Domain.Entities;
 using Agricargo.Domain.Interfaces;
 
 namespace Agricargo.Application.Services;
 
-public class ShipService 
+public class ShipService : IShipService
 {
     private readonly IShipRepository _shipRepository;
 
@@ -24,24 +25,21 @@ public class ShipService
         return _shipRepository.Get();
     }
 
-    public string Delete(int id)
+    public void Delete(Ship ship)
     {
-        var isDeleted = _shipRepository.Delete(id);
-        if (isDeleted)
-        {
-            return "Borrado";
-        }
-        return "No se borró";
+        _shipRepository.Delete(ship);
+    
 
     }
 
-    public void Add(string type, float capacity, string captain)
+    public void Add(ShipCreateRequest shipService)
     {
         _shipRepository.Add(new Ship
         {
-            TypeShip = type,
-            Capacity = capacity,
-            Captain = captain
+            TypeShip = shipService.TypeShip,
+            Capacity = shipService.Capacity,
+            Captain = shipService.Captain
         });
     }
+
 }

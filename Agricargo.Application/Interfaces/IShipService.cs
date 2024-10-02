@@ -1,5 +1,6 @@
-﻿using Agricargo.Domain.Entities;
-using Agricargo.Domain.Interfaces;
+﻿using Agricargo.Application.Models.Requests;
+using Agricargo.Domain.Entities;
+
 
 namespace Agricargo.Application.Services
 {
@@ -11,7 +12,7 @@ namespace Agricargo.Application.Services
         public List<Ship> Get();
 
 
-        public string Delete(int id);
+        public void Delete(Ship ship);
 
 
         public void Add(ShipCreateRequest shipService);

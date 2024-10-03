@@ -31,7 +31,7 @@ public class ShipController : ControllerBase
         return Ok(_shipService.Get());
     }
 
-    [HttpGet("getShip")]
+    [HttpGet("getShip/{id}")]
     public ActionResult GetShip(int id)
     {
         return Ok(_shipService.Get(id));

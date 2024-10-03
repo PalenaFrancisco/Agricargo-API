@@ -10,8 +10,6 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 
-var connection = new SqliteConnection("Data source = DbTest.db");
-connection.Open();
 
 // Add services to the container.
 
@@ -22,7 +20,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IShipRepository, ShipRepository>();
 builder.Services.AddScoped<IShipService, ShipService>();
 
-builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlite(connection, b => b.MigrationsAssembly("Infrastructure")));
+var connection = new SqliteConnection("Data source = DbTest.db");
+connection.Open();
+builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlite(connection, b => b.MigrationsAssembly("Agricargo.Infrastructure")));
 
 builder.Services.AddCors(options =>
 {

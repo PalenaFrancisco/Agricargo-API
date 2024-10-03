@@ -38,7 +38,8 @@ public class ShipService : IShipService
         {
             TypeShip = shipService.TypeShip,
             Capacity = shipService.Capacity,
-            Captain = shipService.Captain
+            Captain = shipService.Captain,
+            Available = shipService.Available
         });
     }
 

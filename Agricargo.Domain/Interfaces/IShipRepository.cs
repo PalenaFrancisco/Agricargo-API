@@ -1,14 +1,11 @@
 ﻿using Agricargo.Domain.Entities;
+using Agricargo.Infrastructure.Repositories;
 
 namespace Agricargo.Domain.Interfaces
 {
-    public interface IShipRepository
+    public interface IShipRepository : IBaseRepository <Ship>
     {
-        public void Add(Ship ship);
-        public bool Delete(int id);
-        public Ship Get(int id);
-        public List<Ship> Get();
-        public void Update(int id);
+
      
     }
 }

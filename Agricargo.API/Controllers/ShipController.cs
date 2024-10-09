@@ -1,4 +1,5 @@
 ﻿
+using Agricargo.Application.Models.Requests;
 using Agricargo.Application.Services;
 using Agricargo.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,9 @@ public class ShipController : ControllerBase
     }
 
     [HttpPost("addShip")]
-    public ActionResult Post(string type, float capacity, string captain)
+    public ActionResult Post([FromBody] ShipCreateRequest shipRequest)
     {
-        _shipService.Add(type, capacity, captain);
+        _shipService.Add(shipRequest);
         return Ok("Creado");
     }
 
@@ -30,7 +31,7 @@ public class ShipController : ControllerBase
         return Ok(_shipService.Get());
     }
 
-    [HttpGet("getShip")]
+    [HttpGet("getShip/{id}")]
     public ActionResult GetShip(int id)
     {
         return Ok(_shipService.Get(id));

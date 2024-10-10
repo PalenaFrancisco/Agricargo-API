@@ -17,4 +17,8 @@ public class Ship
     [Required]
     public string? Captain { get; set; }
     public bool Available { get; set; } = true;
+
+    //--------------------------------------------
+
+    public ICollection<Trip> Trips { get; set; }
 }

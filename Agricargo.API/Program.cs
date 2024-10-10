@@ -1,11 +1,13 @@
 
 
+using Agricargo.Application.Interfaces;
 using Agricargo.Application.Services;
 using Agricargo.Domain.Interfaces;
 using Agricargo.Infrastructure.Data;
 using Agricargo.Infrastructure.Data.Repositories;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,9 +21,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IShipRepository, ShipRepository>();
 builder.Services.AddScoped<IShipService, ShipService>();
+builder.Services.AddScoped<ITripRepository, TripRepository>();
+builder.Services.AddScoped<ITripService, TripService>();
 
-var connection = new SqliteConnection("Data source = DbTest.db");
-connection.Open();
+var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlite(connection, b => b.MigrationsAssembly("Agricargo.Infrastructure")));
 
 builder.Services.AddCors(options =>

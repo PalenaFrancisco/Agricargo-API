@@ -13,6 +13,7 @@ namespace Agricargo.Infrastructure.Data
     {
         public DbSet<Ship> Ships { get; set; }
         public DbSet<Trip> Trips { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -22,6 +23,12 @@ namespace Agricargo.Infrastructure.Data
                 .HasMany(s => s.Trips)
                 .WithOne(t => t.Ship)
                 .HasForeignKey(t => t.ShipId);
+
+            modelBuilder.Entity<User>()
+                .HasDiscriminator<string>("TypeUser")
+                .HasValue<Client>("Client")
+                .HasValue<Company>("Admin")
+                .HasValue<SuperAdmin>("SuperAdmin");
 
             base.OnModelCreating(modelBuilder);
         }

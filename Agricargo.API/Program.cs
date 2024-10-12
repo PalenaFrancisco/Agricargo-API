@@ -9,6 +9,8 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
+using Agricargo.Infrastructure.Data.Hasher;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -23,6 +25,11 @@ builder.Services.AddScoped<IShipRepository, ShipRepository>();
 builder.Services.AddScoped<IShipService, ShipService>();
 builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddScoped<ITripService, TripService>();
+
+//-----------------------------------
+builder.Services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 

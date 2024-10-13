@@ -10,11 +10,14 @@ namespace Agricargo.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly TokenService _tokenService;
 
-        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher)
+
+        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher, TokenService tokenService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _tokenService = tokenService;
         }
 
         public User CreateUserByRole(UserCreateRequest request) 
@@ -24,6 +27,7 @@ namespace Agricargo.Application.Services
                 case "Client":
                     return new Client
                     {
+                        Id = Guid.NewGuid(),
                         Name = request.Name,
                         Email = request.Email,
                         Password = _passwordHasher.HashPassword(request.Password)
@@ -32,6 +36,7 @@ namespace Agricargo.Application.Services
                 case "Admin":
                     return new Company
                     {
+                        Id = Guid.NewGuid(),
                         Name = request.Name,
                         Email = request.Email,
                         CompanyName = request.CompanyName,
@@ -41,6 +46,7 @@ namespace Agricargo.Application.Services
                 case "SuperAdmin":
                     return new SuperAdmin
                     {
+                        Id = Guid.NewGuid(),
                         Name = request.Name,
                         Email = request.Email,
                         Password = _passwordHasher.HashPassword(request.Password)
@@ -70,43 +76,39 @@ namespace Agricargo.Application.Services
             }
         }
 
-        public bool RegisterUser(UserCreateRequest userRequest, Guid? creatorId = null)
+        public string RegisterUser(UserCreateRequest userRequest, Guid? creatorId = null)
         {
-            if (!userRequest.IsValid())
-            {
-                return false;
-            }
 
             if (userRequest.Role == "Admin" || userRequest.Role == "SuperAdmin")
             {
                 if (creatorId == null)
                 {
-                    return false;
+                    return "SysAdmin Key not found";
                 }
 
                 var isCreatorSuperAdmin = _userRepository.IsSuperAdmin(creatorId.Value);
                 if (!isCreatorSuperAdmin)
                 {
-                    return false;
+                    return "You are not SysAdmin";
                 }
             }
 
             var existingUser = _userRepository.GetUserByEmail(userRequest.Email);
             if (existingUser != null)
             {
-                return false;
+                return "There is already a user with that email";
             }
 
             try
             {
                 var newUser = CreateUserByRole(userRequest);
                 _userRepository.Add(newUser);
-                return true;
+                return _tokenService.GenerateToken(newUser);
             }
             catch (Exception ex)
             {
                 // Manejo de errores
-                return false;
+                return "Something not worked, try again";
             }
         }
 
@@ -136,6 +138,18 @@ namespace Agricargo.Application.Services
                 return false;
             }
         }
+
+        public string Login(string email, string password)
+        { 
+            var user = _userRepository.GetUserByEmail(email);
+            if (user == null || _passwordHasher.VerifyPassword(password, user.Password) == false) 
+            {
+                return "Email or Password incorrect";
+            }
+
+            var token = _tokenService.GenerateToken(user);
+            return token;
+        }   
     }
 
 }

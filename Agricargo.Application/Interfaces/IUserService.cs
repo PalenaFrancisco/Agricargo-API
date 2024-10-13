@@ -10,7 +10,7 @@ namespace Agricargo.Application.Interfaces
 {
     public interface IUserService
     {
-        public bool RegisterUser(UserCreateRequest userRequest, Guid? creatorId = null);
+        public string RegisterUser(UserCreateRequest userRequest, Guid? creatorId = null);
 
         public bool UpdateUser(User user);
 

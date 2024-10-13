@@ -17,8 +17,6 @@ namespace Agricargo.Infrastructure.Data.Repositories
             _context = context;
         }
 
-
-
         // Método para obtener todos los administradores
         public IEnumerable<Company> GetAllAdmins()
         {
@@ -42,6 +40,12 @@ namespace Agricargo.Infrastructure.Data.Repositories
         {
             var user =  _context.Users.Find(userId);
             return user is SuperAdmin; // Verifica si es un SuperAdmin
+        }
+
+        public User GetUserById(Guid id)
+        {
+            var user = _context.Users.Find(id);
+            return user;
         }
     }
 }

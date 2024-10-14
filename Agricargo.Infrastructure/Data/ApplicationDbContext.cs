@@ -12,12 +12,20 @@ namespace Agricargo.Infrastructure.Data
     public class ApplicationDbContext : DbContext
     {
         public DbSet<Ship> Ships { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Ship>().HasKey(e => e.ShipId);
+
+            modelBuilder.Entity<User>()
+                .HasDiscriminator<string>("TypeUser")
+                .HasValue<Client>("Client")
+                .HasValue<Company>("Admin")
+                .HasValue<SuperAdmin>("SuperAdmin");
+
             base.OnModelCreating(modelBuilder);
         }
     }

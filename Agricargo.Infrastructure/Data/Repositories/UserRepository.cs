@@ -15,7 +15,7 @@ namespace Agricargo.Infrastructure.Data.Repositories
 
         public User GetUserByEmail(string email)
         {
-            return _context.Users.FirstOrDefault(u => u.Email == email);
+            return _context.Users.FirstOrDefault(e => e.Email == email);
         }
 
         public bool IsSuperAdmin(Guid userId)

@@ -13,6 +13,6 @@ namespace Agricargo.Application.Models.Requests
         public string Password { get; set; }
         public string Role { get; set; }
         public Guid? SysId { get; set; } = null;
-        public string? CompanyName { get; set; }
+        public string? CompanyName { get; set; } = null;
     }
 }

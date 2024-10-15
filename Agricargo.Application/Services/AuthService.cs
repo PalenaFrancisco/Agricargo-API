@@ -3,13 +3,6 @@ using Agricargo.Domain.Entities;
 using Agricargo.Domain.Interfaces;
 using System;
 
-public enum UserRole
-{
-    Client,
-    Admin,
-    SuperAdmin
-}
-
 namespace Agricargo.Application.Services
 {
     public class AuthService : IAuthService
@@ -17,13 +10,20 @@ namespace Agricargo.Application.Services
         private readonly IUserRepository _userRepository;
         private readonly TokenService _tokenService;
 
+        public enum UserRole
+        {
+            Client,
+            Admin,
+            SuperAdmin
+        }
+
         public AuthService(IUserRepository userRepository, TokenService tokenService)
         {
             _userRepository = userRepository;
             _tokenService = tokenService;
         }
 
-        public User CreateUserByRole(string email, string password, string role, string name, string companyName = null)
+        public User CreateUserByRole(string email, string password, string role, string name, string? companyName)
         {
             if (!Enum.TryParse(role, out UserRole userRole))
             {
@@ -89,7 +89,6 @@ namespace Agricargo.Application.Services
 
             try
             {
-                
                 var newUser = CreateUserByRole(email, password, role, name, companyName);
                 _userRepository.Add(newUser);
 

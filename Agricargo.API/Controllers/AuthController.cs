@@ -14,13 +14,13 @@ namespace Agricargo.API.Controllers
     {
         private readonly IAuthService _authService;
 
-        public AuthController(AuthService authService)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public IActionResult Login([FromBody] LoginRequest request)
         {
             var token = _authService.Login(request.Email, request.Password);
             if (token == null)
@@ -32,8 +32,9 @@ namespace Agricargo.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        public IActionResult Register([FromBody] RegisterRequest request)
         {
+
             var result = _authService.Register(request.Email, request.Password, request.Role, request.Name, request.SysId, request.CompanyName);
             if (!result)
             {

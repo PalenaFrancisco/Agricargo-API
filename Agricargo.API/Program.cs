@@ -1,5 +1,6 @@
 
 
+using Agricargo.Application.Interfaces;
 using Agricargo.Application.Services;
 using Agricargo.Domain.Interfaces;
 using Agricargo.Infrastructure.Data;
@@ -18,7 +19,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IShipRepository, ShipRepository>();
+builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddScoped<IShipService, ShipService>();
+builder.Services.AddScoped<ITripService, TripService>();
 
 var connection = new SqliteConnection("Data source = DbTest.db");
 connection.Open();

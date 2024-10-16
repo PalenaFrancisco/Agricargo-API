@@ -12,4 +12,7 @@ public class Trip
     public DateTime ArriveDate { get; set; }
     public string? TripState { get; set; }
     public bool IsFullCapacity { get; set; } = false;
+
+    public int ShipId { get; set; }
+    public Ship? Ship { get; set; }
 }

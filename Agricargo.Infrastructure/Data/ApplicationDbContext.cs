@@ -13,11 +13,21 @@ namespace Agricargo.Infrastructure.Data
     {
         public DbSet<Ship> Ships { get; set; }
 
+        public DbSet<Trip> Trip { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Ship>().HasKey(e => e.ShipId);
+
+            modelBuilder.Entity<Trip>().HasKey(e => e.Id);
+
+            modelBuilder.Entity<Trip>()
+            .HasOne(t => t.Ship)
+            .WithMany()
+            .HasForeignKey(t => t.ShipId);
+
             base.OnModelCreating(modelBuilder);
         }
     }

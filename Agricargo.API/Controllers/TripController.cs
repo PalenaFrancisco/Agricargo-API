@@ -33,12 +33,12 @@ public class TripController : ControllerBase
     }
 
     [HttpGet("getTrip/{id}")]
-    public ActionResult GetShip(int id)
+    public ActionResult GetTrip(int id)
     {
         return Ok(_tripService.Get(id));
     }
 
-    [HttpPut("updateTripo/{id}")]
+    [HttpPut("updateTrip/{id}")]
     public ActionResult Update(int id, [FromBody] TripCreateRequest tripRequest)
     {
         _tripService.Update(id, tripRequest);

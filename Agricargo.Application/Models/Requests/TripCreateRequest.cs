@@ -9,4 +9,6 @@ public class TripCreateRequest
     public float Price { get; set; }
     public DateTime DepartureDate { get; set; }
     public DateTime ArriveDate { get; set; }
+
+    public int ShipId { get; set; }
 }

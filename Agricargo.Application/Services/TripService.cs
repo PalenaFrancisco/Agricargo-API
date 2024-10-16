@@ -8,7 +8,7 @@ using Agricargo.Infrastructure.Data.Repositories;
 
 namespace Agricargo.Application.Services;
 
-internal class TripService : ITripService
+public class TripService : ITripService
 {
     private readonly ITripRepository _tripRepository;
 
@@ -24,7 +24,8 @@ internal class TripService : ITripService
             Destiny = tripService.Destiny,
             DepartureDate = tripService.DepartureDate,
             ArriveDate = tripService.ArriveDate,
-            Price = tripService.Price
+            Price = tripService.Price,
+            ShipId = tripService.ShipId
         });
     }
 

@@ -29,8 +29,9 @@ public class TripService : ITripService
         });
     }
 
-    public void Delete(Trip trip)
+    public void Delete(int id)
     {
+        var trip = _tripRepository.Get(id);
         _tripRepository.Delete(trip);
     }
 

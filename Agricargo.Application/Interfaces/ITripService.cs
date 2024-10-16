@@ -11,7 +11,7 @@ public interface ITripService
     public List<Trip> Get();
 
 
-    public void Delete(Trip trip);
+    public void Delete(int id);
 
 
     public void Add(TripCreateRequest tripRequest);

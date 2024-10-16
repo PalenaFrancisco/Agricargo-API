@@ -45,10 +45,10 @@ public class TripController : ControllerBase
         return Ok("Actualizado");
     }
 
-    [HttpDelete("deleteTrip")]
-    public ActionResult Delete(Trip trip)
+    [HttpDelete("deleteTrip/{id}")]
+    public ActionResult Delete(int id)
     {
-        _tripService.Delete(trip);
+        _tripService.Delete(id);
         return Ok("Borrado");
     }
 }

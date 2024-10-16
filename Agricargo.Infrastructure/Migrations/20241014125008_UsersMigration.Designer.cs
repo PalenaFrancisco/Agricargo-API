@@ -3,6 +3,7 @@ using System;
 using Agricargo.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agricargo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241014125008_UsersMigration")]
+    partial class UsersMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -42,43 +45,6 @@ namespace Agricargo.Infrastructure.Migrations
                     b.ToTable("Ships");
                 });
 
-            modelBuilder.Entity("Agricargo.Domain.Entities.Trip", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("ArriveDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DepartureDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Destiny")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsFullCapacity")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Origin")
-                        .HasColumnType("TEXT");
-
-                    b.Property<float>("Price")
-                        .HasColumnType("REAL");
-
-                    b.Property<int>("ShipId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("TripState")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShipId");
-
-                    b.ToTable("Trip");
-                });
-
             modelBuilder.Entity("Agricargo.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -86,14 +52,9 @@ namespace Agricargo.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -137,17 +98,6 @@ namespace Agricargo.Infrastructure.Migrations
                     b.HasBaseType("Agricargo.Domain.Entities.User");
 
                     b.HasDiscriminator().HasValue("SuperAdmin");
-                });
-
-            modelBuilder.Entity("Agricargo.Domain.Entities.Trip", b =>
-                {
-                    b.HasOne("Agricargo.Domain.Entities.Ship", "Ship")
-                        .WithMany()
-                        .HasForeignKey("ShipId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ship");
                 });
 #pragma warning restore 612, 618
         }

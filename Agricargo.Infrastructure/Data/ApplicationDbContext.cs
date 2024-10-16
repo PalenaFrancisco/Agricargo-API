@@ -14,6 +14,8 @@ namespace Agricargo.Infrastructure.Data
         public DbSet<Ship> Ships { get; set; }
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Trip> Trip { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +27,14 @@ namespace Agricargo.Infrastructure.Data
                 .HasValue<Client>("Client")
                 .HasValue<Company>("Admin")
                 .HasValue<SuperAdmin>("SuperAdmin");
+
+
+            modelBuilder.Entity<Trip>().HasKey(e => e.Id);
+
+            modelBuilder.Entity<Trip>()
+            .HasOne(t => t.Ship)
+            .WithMany()
+            .HasForeignKey(t => t.ShipId);
 
             base.OnModelCreating(modelBuilder);
         }

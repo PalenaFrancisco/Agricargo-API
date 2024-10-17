@@ -14,7 +14,7 @@ namespace Agricargo.Infrastructure.Data
         public DbSet<Ship> Ships { get; set; }
         public DbSet<User> Users { get; set; }
 
-        public DbSet<Trip> Trip { get; set; }
+        public DbSet<Trip> Trips { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 

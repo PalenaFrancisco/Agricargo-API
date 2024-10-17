@@ -3,6 +3,7 @@ using System;
 using Agricargo.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agricargo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241017175345_shipsMigrations")]
+    partial class shipsMigrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -156,17 +159,12 @@ namespace Agricargo.Infrastructure.Migrations
             modelBuilder.Entity("Agricargo.Domain.Entities.Trip", b =>
                 {
                     b.HasOne("Agricargo.Domain.Entities.Ship", "Ship")
-                        .WithMany("TripList")
+                        .WithMany()
                         .HasForeignKey("ShipId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Ship");
-                });
-
-            modelBuilder.Entity("Agricargo.Domain.Entities.Ship", b =>
-                {
-                    b.Navigation("TripList");
                 });
 
             modelBuilder.Entity("Agricargo.Domain.Entities.Company", b =>

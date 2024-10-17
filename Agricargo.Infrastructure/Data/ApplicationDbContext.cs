@@ -22,6 +22,11 @@ namespace Agricargo.Infrastructure.Data
         {
             modelBuilder.Entity<Ship>().HasKey(e => e.ShipId);
 
+            modelBuilder.Entity<Ship>()
+                .HasOne(s => s.Company)
+                .WithMany(c => c.Ships)
+                .HasForeignKey(s => s.CompanyId);
+
             modelBuilder.Entity<User>()
                 .HasDiscriminator<string>("TypeUser")
                 .HasValue<Client>("Client")
@@ -35,6 +40,11 @@ namespace Agricargo.Infrastructure.Data
             .HasOne(t => t.Ship)
             .WithMany()
             .HasForeignKey(t => t.ShipId);
+
+            modelBuilder.Entity<Trip>()
+               .HasOne(t => t.Ship)
+               .WithMany(s => s.TripList)
+               .HasForeignKey(t => t.ShipId);
 
             base.OnModelCreating(modelBuilder);
         }

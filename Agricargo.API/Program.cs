@@ -85,6 +85,8 @@ builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddScoped<IShipService, ShipService>();
 builder.Services.AddScoped<ITripService, TripService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<TokenService>();
 
 // Configurar la base de datos SQLite

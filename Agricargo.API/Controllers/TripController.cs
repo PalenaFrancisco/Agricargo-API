@@ -5,6 +5,7 @@ using Agricargo.Application.Services;
 using Agricargo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 
 namespace Agricargo.API.Controllers;
 
@@ -55,9 +56,13 @@ public class TripController : ControllerBase
     }
 
     [HttpGet("getCompanyTrips")]
-    public IActionResult GetCompanyTrips(Guid companyId)
+    [Authorize(Policy = "AdminPolicy")]
+    public IActionResult GetCompanyTrips()
     {
-        var trips = _tripService.GetTrips(companyId);
+        var userId = User.FindFirst("id")?.Value;
+        Guid.TryParse(userId, out Guid parsedGuid);
+
+        var trips = _tripService.GetTrips(parsedGuid);
         if (trips is not null)
         {
             return Ok(trips);

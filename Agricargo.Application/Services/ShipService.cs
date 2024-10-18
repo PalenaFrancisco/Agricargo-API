@@ -44,4 +44,17 @@ public class ShipService : IShipService
         });
     }
 
+    //------------------------------------------------------
+
+    public bool IsShipOwnedByCompany(int shipId, Guid companyId) 
+    {
+        var ship = _shipRepository.Get(shipId);
+
+        if (ship == null) 
+        {
+            return false;
+        }
+        return ship.CompanyId == companyId;
+    }
+
 }

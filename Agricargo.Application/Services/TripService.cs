@@ -5,19 +5,45 @@ using Agricargo.Application.Models.Requests;
 using Agricargo.Domain.Entities;
 using Agricargo.Domain.Interfaces;
 using Agricargo.Infrastructure.Data.Repositories;
+using System.Security.Claims;
 
 namespace Agricargo.Application.Services;
 
 public class TripService : ITripService
 {
     private readonly ITripRepository _tripRepository;
+    private readonly IShipService _shipService;
 
-    public TripService(ITripRepository tripRepository)
+    public TripService(ITripRepository tripRepository, IShipService shipService)
     {
         _tripRepository = tripRepository;
+        _shipService = shipService;
     }
-    public void Add(TripCreateRequest tripService)
+
+    private Guid GetCompanyIdFromUser(ClaimsPrincipal user)
     {
+        var userId = user.FindFirst("id")?.Value;
+
+        if (!Guid.TryParse(userId, out Guid parsedGuid))
+        {
+            throw new UnauthorizedAccessException("Token inválido");
+        }
+
+        return parsedGuid;
+    }
+
+    public void Add(TripCreateRequest tripService, ClaimsPrincipal user)
+    {
+        var userId = GetCompanyIdFromUser(user);
+
+        bool isShipOwned = _shipService.IsShipOwnedByCompany(tripService.ShipId, userId);
+
+        if (!isShipOwned) 
+        {
+            throw new UnauthorizedAccessException("Barco no asociado a la empresa");
+        }
+
+       
         _tripRepository.Add(new Trip
         {
             Origin = tripService.Origin,
@@ -27,11 +53,24 @@ public class TripService : ITripService
             Price = tripService.Price,
             ShipId = tripService.ShipId
         });
+
+            
+        
     }
 
-    public void Delete(int id)
+    public void Delete(int id, ClaimsPrincipal user)
     {
         var trip = _tripRepository.Get(id);
+
+        if (trip == null) 
+        {
+            throw new Exception("Viaje no encontrado");
+        }
+        var trips = GetTrips(user);
+        if (!trips.Any(t => t.Id == id))
+        {
+            throw new UnauthorizedAccessException("No tienes permiso de eliminar este viaje");
+        }
         _tripRepository.Delete(trip);
     }
 
@@ -46,26 +85,42 @@ public class TripService : ITripService
         return _tripRepository.Get();
     }
 
-    public void Update(int id, TripCreateRequest tripRequest)
+    public void Update(int id, TripUpdateRequest tripRequest, ClaimsPrincipal user)
     {
         var trip = _tripRepository.Get(id);
-        if (trip != null)
-        {
-            trip.Origin = tripRequest.Origin;
-            trip.Destiny = tripRequest.Destiny;
-            trip.DepartureDate = tripRequest.DepartureDate;
-            trip.ArriveDate = tripRequest.ArriveDate;
-            trip.Price = tripRequest.Price;
-
-            _tripRepository.Update(trip);
-        } else
+        if (trip == null) 
         {
             throw new Exception("Viaje no encontrado");
         }
+        var trips = GetTrips(user);
+
+
+        if (!trips.Any(t => t.Id == id))
+        {
+            throw new UnauthorizedAccessException("No tienes permiso a realizar esta accion");
+        }
+
+        trip.Origin = tripRequest.Origin;
+        trip.Destiny = tripRequest.Destiny;
+        trip.DepartureDate = tripRequest.DepartureDate;
+        trip.ArriveDate = tripRequest.ArriveDate;
+        trip.Price = tripRequest.Price;
+
+        _tripRepository.Update(trip);
+
     }
 
-    public List<Trip> GetTrips(Guid companyId)
+    public List<Trip> GetTrips(ClaimsPrincipal user)
     {
-        return _tripRepository.GetCompanyTrips(companyId);
+        var userId = GetCompanyIdFromUser(user);
+
+        var trips =  _tripRepository.GetCompanyTrips(userId);
+
+        if (trips == null || !trips.Any())
+        {
+           throw new Exception("No se encontraron viajes para la empresa.");
+        }
+
+        return trips;
     }
 }

@@ -16,6 +16,8 @@ namespace Agricargo.Application.Services
 
 
         public void Add(ShipCreateRequest shipService);
-  
+
+        public bool IsShipOwnedByCompany(int shipId, Guid companyId);
+
     }
 }

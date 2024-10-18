@@ -22,10 +22,22 @@ public class TripController : ControllerBase
     }
 
     [HttpPost("addTrip")]
+    [Authorize(Policy = "AdminPolicy")]
     public ActionResult Post([FromBody] TripCreateRequest tripRequest)
     {
-        _tripService.Add(tripRequest);
-        return Ok("Creado");
+        try
+        {
+            _tripService.Add(tripRequest, User);
+            return Ok("Creado");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
+        catch (Exception ex) 
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpGet("getTrips")]
@@ -42,35 +54,55 @@ public class TripController : ControllerBase
     }
 
     [HttpPut("updateTrip/{id}")]
-    public ActionResult Update(int id, [FromBody] TripCreateRequest tripRequest)
+    public ActionResult Update(int id, [FromBody] TripUpdateRequest tripRequest)
     {
-        _tripService.Update(id, tripRequest);
-        return Ok("Actualizado");
+        try
+        {
+            _tripService.Update(id, tripRequest, User);
+            return Ok("Actualizado");
+        }catch (UnauthorizedAccessException ex){
+            return Unauthorized(ex.Message);
+        }catch (Exception ex){
+            return NotFound(ex.Message);        
+        }
+        
     }
 
     [HttpDelete("deleteTrip/{id}")]
     public ActionResult Delete(int id)
     {
-        _tripService.Delete(id);
-        return Ok("Borrado");
+        try
+        {
+            _tripService.Delete(id, User);
+            return Ok("Borrado");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
+        catch (Exception ex) 
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpGet("getCompanyTrips")]
     [Authorize(Policy = "AdminPolicy")]
     public IActionResult GetCompanyTrips()
     {
-        var userId = User.FindFirst("id")?.Value;
-        Guid.TryParse(userId, out Guid parsedGuid);
-
-        var trips = _tripService.GetTrips(parsedGuid);
-        if (trips is not null)
+        try
         {
+            var trips  = _tripService.GetTrips(User);
             return Ok(trips);
-        } else
-        {
-            return NotFound("No hay viajes asociados a esta empresa");
         }
-
+        catch (UnauthorizedAccessException ex) 
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }
 

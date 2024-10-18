@@ -3,6 +3,7 @@ using Agricargo.Application.Interfaces;
 using Agricargo.Application.Models.Requests;
 using Agricargo.Application.Services;
 using Agricargo.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Agricargo.API.Controllers;
@@ -27,6 +28,7 @@ public class TripController : ControllerBase
     }
 
     [HttpGet("getTrips")]
+    [Authorize(Policy = "ClientPolicy")]
     public ActionResult Get()
     {
         return Ok(_tripService.Get());

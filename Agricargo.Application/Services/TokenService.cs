@@ -23,8 +23,8 @@ namespace Agricargo.Application.Services
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.TypeUser)
+                new Claim("id", user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.TypeUser)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

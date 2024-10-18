@@ -17,4 +17,7 @@ public interface ITripService
     public void Add(TripCreateRequest tripRequest);
 
     public void Update(int id, TripCreateRequest tripRequest);
+
+    public List<Trip> GetTrips(Guid companyId);
+
 }

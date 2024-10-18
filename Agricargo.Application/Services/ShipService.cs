@@ -39,7 +39,8 @@ public class ShipService : IShipService
             TypeShip = shipService.TypeShip,
             Capacity = shipService.Capacity,
             Captain = shipService.Captain,
-            Available = shipService.Available
+            Available = shipService.Available,
+            CompanyId = shipService.CompanyId
         });
     }
 

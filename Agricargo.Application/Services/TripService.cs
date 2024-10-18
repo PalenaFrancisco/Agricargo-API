@@ -63,4 +63,9 @@ public class TripService : ITripService
             throw new Exception("Viaje no encontrado");
         }
     }
+
+    public List<Trip> GetTrips(Guid companyId)
+    {
+        return _tripRepository.GetCompanyTrips(companyId);
+    }
 }

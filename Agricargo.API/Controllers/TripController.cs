@@ -28,7 +28,7 @@ public class TripController : ControllerBase
     }
 
     [HttpGet("getTrips")]
-    [Authorize(Policy = "ClientPolicy")]
+    [Authorize(Policy = "AllPolicy")]
     public ActionResult Get()
     {
         return Ok(_tripService.Get());
@@ -52,6 +52,20 @@ public class TripController : ControllerBase
     {
         _tripService.Delete(id);
         return Ok("Borrado");
+    }
+
+    [HttpGet("getCompanyTrips")]
+    public IActionResult GetCompanyTrips(Guid companyId)
+    {
+        var trips = _tripService.GetTrips(companyId);
+        if (trips is not null)
+        {
+            return Ok(trips);
+        } else
+        {
+            return NotFound("No hay viajes asociados a esta empresa");
+        }
+
     }
 }
 

@@ -42,6 +42,8 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("SuperAdmin"));
     options.AddPolicy("ClientPolicy", policy =>
         policy.RequireRole("Client"));
+    options.AddPolicy("AllPolicy", policy =>
+    policy.RequireRole("Client", "Admin"));
 });
 
 // Agregar servicios de controladores

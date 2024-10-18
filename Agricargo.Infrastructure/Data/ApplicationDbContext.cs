@@ -14,13 +14,18 @@ namespace Agricargo.Infrastructure.Data
         public DbSet<Ship> Ships { get; set; }
         public DbSet<User> Users { get; set; }
 
-        public DbSet<Trip> Trip { get; set; }
+        public DbSet<Trip> Trips { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Ship>().HasKey(e => e.ShipId);
+
+            modelBuilder.Entity<Ship>()
+                .HasOne(s => s.Company)
+                .WithMany(c => c.Ships)
+                .HasForeignKey(s => s.CompanyId);
 
             modelBuilder.Entity<User>()
                 .HasDiscriminator<string>("TypeUser")
@@ -35,6 +40,11 @@ namespace Agricargo.Infrastructure.Data
             .HasOne(t => t.Ship)
             .WithMany()
             .HasForeignKey(t => t.ShipId);
+
+            modelBuilder.Entity<Trip>()
+               .HasOne(t => t.Ship)
+               .WithMany(s => s.TripList)
+               .HasForeignKey(t => t.ShipId);
 
             base.OnModelCreating(modelBuilder);
         }

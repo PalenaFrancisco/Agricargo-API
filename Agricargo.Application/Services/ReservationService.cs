@@ -12,11 +12,13 @@ public class ReservationService : IReservationService
 {
     private readonly IReservationRepository _reservationRepository;
     private readonly ITripService _tripService;
+    private readonly IShipService _shipService;
 
-    public ReservationService(IReservationRepository reservationRepository, ITripService tripService)
+    public ReservationService(IReservationRepository reservationRepository, ITripService tripService, IShipService shipService)
     {
         _reservationRepository = reservationRepository;
         _tripService = tripService;
+        _shipService = shipService;
     }
 
     public void AddReservation(ClaimsPrincipal user, int tripId)
@@ -86,8 +88,9 @@ public class ReservationService : IReservationService
         }
 
         var trip = _tripService.Get(reservation.TripId);
+        bool isShipOwned = _shipService.IsShipOwnedByCompany(trip.ShipId, userId);
 
-        if (trip == null || trip.Ship.CompanyId != userId)
+        if (trip == null || !isShipOwned)
         {
             throw new Exception("No tienes permiso para eliminar esta reserva.");
         }

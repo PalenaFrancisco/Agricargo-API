@@ -9,5 +9,9 @@ public interface IReservationService
 {
     public void AddReservation(ClaimsPrincipal user, int tripId);
 
-    public List<Reservation> GetReservations(ClaimsPrincipal user);
+    public List<Reservation> GetClientReservations(ClaimsPrincipal user);
+
+    public List<Reservation> GetCompanyReservations(ClaimsPrincipal user);
+
+    public void DeleteReservation(int reservationId, ClaimsPrincipal user);
 }

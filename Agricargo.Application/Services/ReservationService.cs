@@ -23,7 +23,7 @@ public class ReservationService : IReservationService
     {
         var trip = _tripService.Get(tripId);
 
-        if(trip is null || trip.IsFullCapacity)
+        if (trip is null || trip.IsFullCapacity)
         {
             throw new Exception("Viaje no encontrado");
         }
@@ -34,18 +34,7 @@ public class ReservationService : IReservationService
             throw new Exception("Viaje no disponible");
         }
 
-        var userIdClaim = user.FindFirst("id")?.Value;
-
-        if (string.IsNullOrEmpty(userIdClaim))
-        {
-            throw new Exception("Usuario no válido.");
-        }
-
-        Guid clientId;
-        if (!Guid.TryParse(userIdClaim, out clientId))
-        {
-            throw new Exception("El ID de usuario no es un Guid válido.");
-        }
+        var clientId = GetIdFromUser(user);
 
         var reservation = new Reservation
         {
@@ -55,24 +44,69 @@ public class ReservationService : IReservationService
             PurchaseDate = currentDate,
             DepartureDate = trip.DepartureDate,
             ArriveDate = trip.ArriveDate,
-            ReservationStatus = trip.TripState 
+            ReservationStatus = trip.TripState
         };
 
         _reservationRepository.Add(reservation);
     }
 
-    public List<Reservation> GetReservations(ClaimsPrincipal user)
+    public List<Reservation> GetClientReservations(ClaimsPrincipal user)
     {
-        var userIdClaim = user.FindFirst("id")?.Value;
+        var userIdClaim = GetIdFromUser(user);
 
-        if (userIdClaim == null)
-        {
-            throw new Exception("Usuario no autenticado.");
-        }
-
-        Guid clientId = Guid.Parse(userIdClaim);
-        return _reservationRepository.GetReservationsByClientId(clientId);
+        return _reservationRepository.GetReservationsByClientId(userIdClaim);
     }
 
-    
+    public List<Reservation> GetCompanyReservations(ClaimsPrincipal user)
+    {
+        var userIdClaim = GetIdFromUser(user);
+
+        return _reservationRepository.GetReservationsByCompanyId(userIdClaim);
+    }
+    public void DeleteReservation(int reservationId, ClaimsPrincipal user)
+    {
+        var reservation = _reservationRepository.Get(reservationId);
+
+        if (reservation == null)
+        {
+            throw new Exception("Reserva no encontrada.");
+        }
+
+        if (reservation.DepartureDate <= DateTime.Now)
+        {
+            throw new Exception("No se puede eliminar la reserva porque el viaje ya ha comenzado o finalizado.");
+        }
+
+        var userId = GetIdFromUser(user);
+
+        if (reservation.ClientId == userId)
+        {
+            _reservationRepository.Delete(reservation);
+            return;
+        }
+
+        var trip = _tripService.Get(reservation.TripId);
+
+        if (trip == null || trip.Ship.CompanyId != userId)
+        {
+            throw new Exception("No tienes permiso para eliminar esta reserva.");
+        }
+
+
+        _reservationRepository.Delete(reservation);
+
+    }
+
+    private Guid GetIdFromUser(ClaimsPrincipal user)
+    {
+        var userId = user.FindFirst("id")?.Value;
+
+        if (!Guid.TryParse(userId, out Guid parsedGuid))
+        {
+            throw new UnauthorizedAccessException("Token inválido");
+        }
+
+        return parsedGuid;
+    }
+
 }

@@ -8,4 +8,5 @@ namespace Agricargo.Domain.Interfaces;
 public interface IReservationRepository : IBaseRepository<Reservation>
 {
    public List<Reservation> GetReservationsByClientId(Guid clientId);
+    public List<Reservation> GetReservationsByCompanyId(Guid clientId);
 }

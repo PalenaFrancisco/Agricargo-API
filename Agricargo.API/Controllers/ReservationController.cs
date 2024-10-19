@@ -31,12 +31,28 @@ namespace Agricargo.API.Controllers
             }
         }
 
-        [HttpGet("reservations")]
+        [HttpGet("clientReservations")]
         [Authorize(Policy = "ClientPolicy")]
         public IActionResult GetClientReservations()
         {
-            var clientReservations = _reservationService.GetReservations(User);
+            var clientReservations = _reservationService.GetClientReservations(User);
             return Ok(clientReservations);
+        }
+
+        [HttpGet("companyReservations")]
+        [Authorize(Policy = "AdminPolicy")]
+        public IActionResult GetCompanyReservations()
+        {
+            var clientReservations = _reservationService.GetCompanyReservations(User);
+            return Ok(clientReservations);
+        }
+
+        [HttpGet("deleteReservations/{id}")]
+        [Authorize(Policy = "AllPolicy")]
+        public IActionResult DeleteReservation(int id)
+        {
+            _reservationService.DeleteReservation(id, User);
+            return Ok("Reserva eliminada");
         }
     }
 }

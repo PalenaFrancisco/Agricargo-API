@@ -28,7 +28,7 @@ namespace Agricargo.API.Controllers
                 return Unauthorized();
             }
 
-            return Ok(new { Token = token });
+            return Ok(token);
         }
 
         [HttpPost("register")]

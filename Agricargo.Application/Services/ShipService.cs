@@ -3,6 +3,7 @@
 using Agricargo.Application.Models.Requests;
 using Agricargo.Domain.Entities;
 using Agricargo.Domain.Interfaces;
+using System.Security.Claims;
 
 namespace Agricargo.Application.Services;
 
@@ -32,7 +33,7 @@ public class ShipService : IShipService
 
     }
 
-    public void Add(ShipCreateRequest shipService)
+    public void Add(ShipCreateRequest shipService, ClaimsPrincipal user)
     {
         _shipRepository.Add(new Ship
         {
@@ -40,7 +41,7 @@ public class ShipService : IShipService
             Capacity = shipService.Capacity,
             Captain = shipService.Captain,
             Available = shipService.Available,
-            CompanyId = shipService.CompanyId
+            CompanyId = GetIdFromUser(user)
         });
     }
 
@@ -55,6 +56,18 @@ public class ShipService : IShipService
             return false;
         }
         return ship.CompanyId == companyId;
+    }
+
+    private Guid GetIdFromUser(ClaimsPrincipal user)
+    {
+        var userId = user.FindFirst("id")?.Value;
+
+        if (!Guid.TryParse(userId, out Guid parsedGuid))
+        {
+            throw new UnauthorizedAccessException("Token inválido");
+        }
+
+        return parsedGuid;
     }
 
 }

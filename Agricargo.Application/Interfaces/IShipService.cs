@@ -1,5 +1,6 @@
 ﻿using Agricargo.Application.Models.Requests;
 using Agricargo.Domain.Entities;
+using System.Security.Claims;
 
 
 namespace Agricargo.Application.Services
@@ -15,7 +16,7 @@ namespace Agricargo.Application.Services
         public void Delete(Ship ship);
 
 
-        public void Add(ShipCreateRequest shipService);
+        public void Add(ShipCreateRequest shipService, ClaimsPrincipal user);
 
         public bool IsShipOwnedByCompany(int shipId, Guid companyId);
 

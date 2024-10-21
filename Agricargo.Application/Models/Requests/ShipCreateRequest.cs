@@ -14,6 +14,6 @@ namespace Agricargo.Application.Models.Requests
         public string? Captain { get; set; }
         public bool Available { get; set; } = true;
 
-        public Guid? CompanyId { get; set; }
+        //public Guid? CompanyId { get; set; }
     }
 }

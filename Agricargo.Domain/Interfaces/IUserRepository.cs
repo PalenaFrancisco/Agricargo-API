@@ -8,5 +8,7 @@ namespace Agricargo.Domain.Interfaces
         User GetUserByEmail(string email);
 
         public bool IsSuperAdmin(Guid userId);
+
+        public User FindByGuid(Guid id);
     }
 }

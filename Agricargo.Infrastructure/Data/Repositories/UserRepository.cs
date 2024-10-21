@@ -23,5 +23,11 @@ namespace Agricargo.Infrastructure.Data.Repositories
             var user = _context.Users.Find(userId);
             return user is SuperAdmin;
         }
+
+        public User FindByGuid(Guid id) 
+        {
+            var user = _context.Users.Find(id);
+            return user;
+        }
     }
 }

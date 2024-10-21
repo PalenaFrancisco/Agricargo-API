@@ -21,7 +21,7 @@ public class ShipController : ControllerBase
     [HttpPost("addShip")]
     public ActionResult Post([FromBody] ShipCreateRequest shipRequest)
     {
-        _shipService.Add(shipRequest);
+        _shipService.Add(shipRequest, User);
         return Ok("Creado");
     }
 

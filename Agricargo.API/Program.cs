@@ -42,6 +42,8 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("SuperAdmin"));
     options.AddPolicy("ClientPolicy", policy =>
         policy.RequireRole("Client"));
+    options.AddPolicy("AllPolicy", policy =>
+    policy.RequireRole("Client", "Admin"));
 });
 
 // Agregar servicios de controladores
@@ -83,7 +85,10 @@ builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddScoped<IShipService, ShipService>();
 builder.Services.AddScoped<ITripService, TripService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Configurar la base de datos SQLite
 var connection = new SqliteConnection("Data source = DbTest.db");

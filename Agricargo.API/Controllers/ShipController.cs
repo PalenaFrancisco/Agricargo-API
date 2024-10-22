@@ -26,7 +26,7 @@ public class ShipController : ControllerBase
         return Ok("Creado");
     }
 
-    [HttpPut("updateShip")]
+    [HttpPut("updateShip/{id}")]
     public IActionResult Update(int id, ShipCreateRequest shipRequest)
     {
         _shipService.Update(User, id, shipRequest);

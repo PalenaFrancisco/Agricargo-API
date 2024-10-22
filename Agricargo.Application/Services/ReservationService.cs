@@ -1,6 +1,7 @@
 ﻿
 
 using Agricargo.Application.Interfaces;
+using Agricargo.Application.Models.DTOs;
 using Agricargo.Domain.Entities;
 using Agricargo.Domain.Interfaces;
 using Agricargo.Infrastructure.Data.Repositories;
@@ -52,11 +53,23 @@ public class ReservationService : IReservationService
         _reservationRepository.Add(reservation);
     }
 
-    public List<Reservation> GetClientReservations(ClaimsPrincipal user)
+    public List<ReservationDTO> GetClientReservations(ClaimsPrincipal user)
     {
         var userIdClaim = GetIdFromUser(user);
 
-        return _reservationRepository.GetReservationsByClientId(userIdClaim);
+        var reservations = _reservationRepository.GetReservationsByClientId(userIdClaim);
+
+        // Mapea las reservas a DTOs
+        var reservationDtos = reservations.Select(r => new ReservationDTO
+        {
+            Id = r.ReservationId,
+            Trip = $"{r.Trip.Origin} - {r.Trip.Destiny}",
+            Date = r.DepartureDate,
+            Price = r.PurchaseAmount,
+            Status = r.ReservationStatus
+        }).ToList();
+
+        return reservationDtos;
     }
 
     public List<Reservation> GetCompanyReservations(ClaimsPrincipal user)

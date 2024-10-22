@@ -1,4 +1,5 @@
 ﻿
+using Agricargo.Application.Models.DTOs;
 using Agricargo.Application.Models.Requests;
 using Agricargo.Domain.Entities;
 using System.Security.Claims;
@@ -9,7 +10,7 @@ public interface IReservationService
 {
     public void AddReservation(ClaimsPrincipal user, int tripId);
 
-    public List<Reservation> GetClientReservations(ClaimsPrincipal user);
+    public List<ReservationDTO> GetClientReservations(ClaimsPrincipal user);
 
     public List<Reservation> GetCompanyReservations(ClaimsPrincipal user);
 

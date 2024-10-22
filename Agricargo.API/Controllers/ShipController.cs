@@ -27,17 +27,17 @@ public class ShipController : ControllerBase
     }
 
     [HttpPut("updateShip/{id}")]
-    public IActionResult Update(int id, ShipCreateRequest shipRequest)
+    public IActionResult Update(int id, [FromBody] ShipCreateRequest shipRequest)
     {
         _shipService.Update(User, id, shipRequest);
-        return Ok("Barco modificado con éxito");
+        return Ok("Barco modificado con éxito.");
     }
 
-    [HttpDelete("deleteShip")]
+    [HttpDelete("deleteShip/{id}")]
     public IActionResult Delete(int id)
     {
         _shipService.Delete(User, id);
-        return Ok("Barco eliminado con éxito");
+        return Ok("Barco eliminado con éxito.");
     }
 
     [HttpGet("getShips")]

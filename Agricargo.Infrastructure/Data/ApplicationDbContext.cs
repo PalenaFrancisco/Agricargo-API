@@ -16,6 +16,8 @@ namespace Agricargo.Infrastructure.Data
         public DbSet<Trip> Trips { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
 
+        public DbSet<Favorite> Favorites { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -50,6 +52,19 @@ namespace Agricargo.Infrastructure.Data
                 .HasMany(c => c.Reservations)
                 .WithOne(r => r.Client)
                 .HasForeignKey(r => r.ClientId);
+
+            modelBuilder.Entity<Favorite>()
+            .HasOne(f => f.Trip)
+            .WithMany() 
+            .HasForeignKey(f => f.TripId)
+            .OnDelete(DeleteBehavior.Cascade); 
+
+        
+            modelBuilder.Entity<Favorite>()
+                .HasOne(f => f.Client)
+                .WithMany(c => c.Favorites)  
+                .HasForeignKey(f => f.ClientId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
         }

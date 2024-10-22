@@ -18,7 +18,7 @@ public class Ship
     public string? Captain { get; set; }
     public bool Available { get; set; } = true;
 
-    public List<Trip> TripList { get; set; }
+    public List<Trip>? Trips { get; set; }
 
     public Guid? CompanyId { get; set; }
     public Company? Company { get; set; }

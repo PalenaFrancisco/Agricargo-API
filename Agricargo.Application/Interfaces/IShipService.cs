@@ -8,12 +8,14 @@ namespace Agricargo.Application.Services
     public interface IShipService
     {
 
-        public Ship Get(int id);
+        public Ship Get(ClaimsPrincipal user, int id);
 
-        public List<Ship> Get();
+        public List<Ship> Get(ClaimsPrincipal user);
 
 
-        public void Delete(Ship ship);
+        public void Delete(ClaimsPrincipal user, int id);
+
+        public void Update(ClaimsPrincipal user, int id, ShipCreateRequest shipRequest);
 
 
         public void Add(ShipCreateRequest shipService, ClaimsPrincipal user);

@@ -16,21 +16,47 @@ public class ShipService : IShipService
         _shipRepository = shipRepository;
     }
 
-    public Ship Get(int id)
+    public Ship Get(ClaimsPrincipal user, int id)
     {
         var ship = _shipRepository.Get(id);
+
+        if (ship is null)
+        {
+            throw new Exception("El barco no existe");
+        }
+
+        var userId = GetIdFromUser(user);
+
+        if (!IsShipOwnedByCompany(ship.ShipId, userId))
+        {
+            throw new Exception("No está habilitado para obtener ese barco");
+        }
+
         return ship;
     }
-    public List<Ship> Get()
+    public List<Ship> Get(ClaimsPrincipal user)
     {
-        return _shipRepository.Get();
+        var userId = GetIdFromUser(user);
+        return _shipRepository.GetCompanyShips(userId);
     }
 
-    public void Delete(Ship ship)
+    public void Delete(ClaimsPrincipal user, int id)
     {
-        _shipRepository.Delete(ship);
-    
+        var ship = _shipRepository.Get(id);
 
+        if (ship is null)
+        {
+            throw new Exception("El barco no existe");
+        }
+
+        var userId = GetIdFromUser(user);
+
+        if (!IsShipOwnedByCompany(ship.ShipId, userId))
+        {
+            throw new Exception("No está habilitado para borrar ese barco");
+        }
+
+        _shipRepository.Delete(ship);
     }
 
     public void Add(ShipCreateRequest shipService, ClaimsPrincipal user)
@@ -45,13 +71,36 @@ public class ShipService : IShipService
         });
     }
 
+    public void Update(ClaimsPrincipal user, int id, ShipCreateRequest shipRequest)
+    {
+        var ship = _shipRepository.Get(id);
+
+        if (ship is null)
+        {
+            throw new Exception("El barco no existe");
+        }
+
+        var userId = GetIdFromUser(user);
+
+        if (ship.CompanyId != userId)
+        {
+            throw new UnauthorizedAccessException("No tienes permiso para modificar este barco");
+        }
+        ship.TypeShip = shipRequest.TypeShip ?? ship.TypeShip;
+        ship.Capacity = shipRequest.Capacity != 0 ? shipRequest.Capacity : ship.Capacity;
+        ship.Captain = shipRequest.Captain ?? ship.Captain;
+        ship.Available = shipRequest.Available;
+
+        _shipRepository.Update(ship);
+    }
+
     //------------------------------------------------------
 
-    public bool IsShipOwnedByCompany(int shipId, Guid companyId) 
+    public bool IsShipOwnedByCompany(int shipId, Guid companyId)
     {
         var ship = _shipRepository.Get(shipId);
 
-        if (ship == null) 
+        if (ship == null)
         {
             return false;
         }
@@ -69,5 +118,6 @@ public class ShipService : IShipService
 
         return parsedGuid;
     }
+
 
 }

@@ -45,7 +45,7 @@ namespace Agricargo.Infrastructure.Data
 
             modelBuilder.Entity<Trip>()
                .HasOne(t => t.Ship)
-               .WithMany(s => s.TripList)
+               .WithMany(s => s.Trips)
                .HasForeignKey(t => t.ShipId);
 
             modelBuilder.Entity<Client>()

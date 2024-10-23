@@ -35,7 +35,7 @@ namespace Agricargo.API.Controllers
         public IActionResult Register([FromBody] RegisterRequest request)
         {
 
-            var result = _authService.Register(request.Email, request.Password, request.Role, request.Name, request.SysId, request.CompanyName);
+            var result = _authService.Register(User, request.Email, request.Password, request.Role, request.Name, request.CompanyName);
             if (!result)
             {
                 return BadRequest("User already exists");

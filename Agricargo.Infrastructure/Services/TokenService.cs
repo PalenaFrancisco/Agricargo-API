@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Agricargo.Domain.Entities;
 
-namespace Agricargo.Application.Services
+namespace Agricargo.Infrastructure.Services
 {
     public class TokenService
     {

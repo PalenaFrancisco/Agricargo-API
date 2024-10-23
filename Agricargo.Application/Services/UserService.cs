@@ -2,7 +2,6 @@
 using Agricargo.Application.Models.Requests;
 using Agricargo.Domain.Entities;
 using Agricargo.Domain.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace Agricargo.Application.Services
@@ -26,7 +25,7 @@ namespace Agricargo.Application.Services
             return parsedGuid;
         }
 
-        public void UpdateUser([FromBody] UpdateUserRequest userUpdate, ClaimsPrincipal user)
+        public void UpdateUser(UpdateUserRequest userUpdate, ClaimsPrincipal user)
         {
             var userId = GetIdFromUser(user);
 

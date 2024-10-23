@@ -2,8 +2,9 @@
 using Agricargo.Domain.Entities;
 using Agricargo.Domain.Interfaces;
 using System;
+using System.Security.Claims;
 
-namespace Agricargo.Application.Services
+namespace Agricargo.Infrastructure.Services
 {
     public class AuthService : IAuthService
     {
@@ -21,6 +22,18 @@ namespace Agricargo.Application.Services
         {
             _userRepository = userRepository;
             _tokenService = tokenService;
+        }
+
+        private Guid GetCompanyIdFromUser(ClaimsPrincipal user)
+        {
+            var userId = user.FindFirst("id")?.Value;
+            Console.WriteLine(userId);
+            if (!Guid.TryParse(userId, out Guid parsedGuid))
+            {
+                throw new UnauthorizedAccessException("Token inválido");
+            }
+
+            return parsedGuid;
         }
 
         public User CreateUserByRole(string email, string password, string role, string name, string? companyName)
@@ -71,17 +84,19 @@ namespace Agricargo.Application.Services
             return _tokenService.GenerateToken(user);
         }
 
-        public bool Register(string email, string password, string role, string name, Guid? sysAdminId = null, string? companyName = null)
+        public bool Register(ClaimsPrincipal user, string email, string password, string role, string name, string? companyName)
         {
             var userExist = _userRepository.GetUserByEmail(email);
             if (userExist != null)
             {
                 return false;
             }
-
+            
             if (role == UserRole.Admin.ToString() || role == UserRole.SuperAdmin.ToString())
             {
-                if (sysAdminId == null || !_userRepository.IsSuperAdmin(sysAdminId.Value))
+                var userId = GetCompanyIdFromUser(user);
+                
+                if (userId == null || !_userRepository.IsSuperAdmin(userId))
                 {
                     return false;
                 }

@@ -121,6 +121,29 @@ public class TripService : ITripService
            throw new Exception("No se encontraron viajes para la empresa.");
         }
 
+        foreach (var trip in trips)
+        {
+            var currentDate = DateTime.Now;
+
+            // Actualizar el estado del viaje según las fechas
+            if (currentDate < trip.DepartureDate)
+            {
+                trip.TripState = "Pendiente";  // El viaje aún no ha comenzado
+            }
+            else if (currentDate >= trip.DepartureDate && currentDate <= trip.ArriveDate)
+            {
+                trip.TripState = "En curso";  // El viaje está en progreso
+            }
+            else if (currentDate > trip.ArriveDate)
+            {
+                trip.TripState = "Completado";  // El viaje ha finalizado
+            }
+
+            // Actualizar el viaje con el nuevo estado
+            _tripRepository.Update(trip);
+        }
+
         return trips;
     }
+
 }

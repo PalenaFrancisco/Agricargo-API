@@ -12,7 +12,7 @@ namespace Agricargo.Application.Models.Requests
         public string? TypeShip { get; set; }
         public float Capacity { get; set; }
         public string? Captain { get; set; }
-        public bool Available { get; set; } = true;
+        //public bool Available { get; set; } = true;
 
         //public Guid? CompanyId { get; set; }
     }

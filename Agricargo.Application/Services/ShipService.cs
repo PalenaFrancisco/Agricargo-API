@@ -66,7 +66,7 @@ public class ShipService : IShipService
             TypeShip = shipService.TypeShip,
             Capacity = shipService.Capacity,
             Captain = shipService.Captain,
-            Available = shipService.Available,
+            //Available = shipService.Available,
             CompanyId = GetIdFromUser(user)
         });
     }
@@ -89,7 +89,7 @@ public class ShipService : IShipService
         ship.TypeShip = shipRequest.TypeShip ?? ship.TypeShip;
         ship.Capacity = shipRequest.Capacity != 0 ? shipRequest.Capacity : ship.Capacity;
         ship.Captain = shipRequest.Captain ?? ship.Captain;
-        ship.Available = shipRequest.Available;
+        //ship.Available = shipRequest.Available;
 
         _shipRepository.Update(ship);
     }

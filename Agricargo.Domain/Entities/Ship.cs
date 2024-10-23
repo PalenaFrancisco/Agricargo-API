@@ -16,10 +16,22 @@ public class Ship
     public float Capacity { get; set; }
     [Required]
     public string? Captain { get; set; }
-    public bool Available { get; set; } = true;
 
     public List<Trip>? Trips { get; set; }
 
     public Guid? CompanyId { get; set; }
     public Company? Company { get; set; }
+
+    public string AvailabilityStatus
+    {
+        get
+        {
+            var currentDate = DateTime.Now;
+
+            // Verificar si hay algún viaje en curso
+            var tripInProgress = Trips?.Any(trip => trip.DepartureDate <= currentDate && trip.ArriveDate >= currentDate) ?? false;
+
+            return tripInProgress ? "Ocupado" : "Disponible";
+        }
+    }
 }

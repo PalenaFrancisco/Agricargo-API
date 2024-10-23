@@ -48,6 +48,11 @@ namespace Agricargo.Application.Services
                 existingUser.Password = hashedPassword;
             }
 
+            if (!string.IsNullOrEmpty(userUpdate.Phone))
+            {
+                existingUser.Phone = userUpdate.Phone;
+            }
+
             if (!string.IsNullOrEmpty(userUpdate.CompanyName) && existingUser.TypeUser == "Admin")
             {
                 if (existingUser is Company companyUser)
@@ -73,6 +78,7 @@ namespace Agricargo.Application.Services
             if (existingUser.Id == userId || user.IsInRole("SuperAdmin"))
             {
                 _context.Delete(existingUser);
+                return;
             }
 
             throw new UnauthorizedAccessException("No esta autorizado a realizar esta accion"); 

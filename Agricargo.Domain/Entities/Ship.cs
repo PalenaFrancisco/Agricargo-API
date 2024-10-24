@@ -2,6 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Agricargo.Domain.Entities;
 
@@ -17,6 +18,7 @@ public class Ship
     [Required]
     public string? Captain { get; set; }
 
+    [JsonIgnore]
     public List<Trip>? Trips { get; set; }
 
     public Guid? CompanyId { get; set; }

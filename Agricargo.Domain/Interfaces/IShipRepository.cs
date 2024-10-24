@@ -7,5 +7,6 @@ namespace Agricargo.Domain.Interfaces
     {
 
         public List<Ship> GetCompanyShips(Guid companyId);
+        public Ship GetCompanyShip(int shipId);
     }
 }

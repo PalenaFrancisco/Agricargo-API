@@ -38,11 +38,21 @@ public class TripService : ITripService
 
         bool isShipOwned = _shipService.IsShipOwnedByCompany(tripService.ShipId, userId);
 
+        Ship ship = _shipService.Get(user ,tripService.ShipId);
+
         if (!isShipOwned) 
         {
             throw new UnauthorizedAccessException("Barco no asociado a la empresa");
         }
 
+        foreach (var trip in ship.Trips)
+        {
+            if ((tripService.DepartureDate <= trip.ArriveDate)&&(tripService.ArriveDate >= trip.DepartureDate)) 
+            {
+                Console.WriteLine(ship);
+                throw new Exception("El barco ya tiene un viaje para esa fecha");
+            }
+        }
        
         _tripRepository.Add(new Trip
         {

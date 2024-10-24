@@ -18,7 +18,7 @@ public class ShipService : IShipService
 
     public Ship Get(ClaimsPrincipal user, int id)
     {
-        var ship = _shipRepository.Get(id);
+        var ship = _shipRepository.GetCompanyShip(id);
 
         if (ship is null)
         {

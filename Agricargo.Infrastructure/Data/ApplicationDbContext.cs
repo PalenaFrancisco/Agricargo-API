@@ -38,10 +38,6 @@ namespace Agricargo.Infrastructure.Data
 
             modelBuilder.Entity<Trip>().HasKey(e => e.Id);
 
-            modelBuilder.Entity<Trip>()
-            .HasOne(t => t.Ship)
-            .WithMany()
-            .HasForeignKey(t => t.ShipId);
 
             modelBuilder.Entity<Trip>()
                .HasOne(t => t.Ship)

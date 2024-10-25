@@ -12,29 +12,36 @@ namespace Agricargo.Application.Services;
 public class ReservationService : IReservationService
 {
     private readonly IReservationRepository _reservationRepository;
+    private readonly ITripRepository _tripRepository;
     private readonly ITripService _tripService;
     private readonly IShipService _shipService;
 
-    public ReservationService(IReservationRepository reservationRepository, ITripService tripService, IShipService shipService)
+    public ReservationService(IReservationRepository reservationRepository, ITripService tripService, IShipService shipService, ITripRepository tripRepository)
     {
         _reservationRepository = reservationRepository;
         _tripService = tripService;
         _shipService = shipService;
+        _tripRepository = tripRepository;
     }
 
-    public void AddReservation(ClaimsPrincipal user, int tripId)
+    public void AddReservation(ClaimsPrincipal user, int tripId, float amountReserved)
     {
         var trip = _tripService.Get(tripId);
 
         if (trip is null || trip.IsFullCapacity)
         {
-            throw new Exception("Viaje no encontrado");
+            throw new Exception("Viaje no encontrado.");
+        }
+
+        if ((trip.AvailableCapacity - amountReserved) < 0)
+        {
+            throw new Exception("Este viaje no tiene la capacidad suficiente para transportar su carga.");
         }
 
         var currentDate = DateTime.Now;
         if (trip.DepartureDate <= currentDate)
         {
-            throw new Exception("Viaje no disponible");
+            throw new Exception("Viaje no disponible.");
         }
 
         var clientId = GetIdFromUser(user);
@@ -43,12 +50,22 @@ public class ReservationService : IReservationService
         {
             ClientId = clientId,
             TripId = tripId,
-            PurchaseAmount = trip.Price,
+            PurchasePrice = trip.Price * amountReserved,
+            PurchaseAmount = amountReserved,
             PurchaseDate = currentDate,
             DepartureDate = trip.DepartureDate,
             ArriveDate = trip.ArriveDate,
             ReservationStatus = trip.TripState
         };
+
+        trip.AvailableCapacity -= amountReserved;
+
+        if (trip.AvailableCapacity <= 0)
+        {
+            trip.IsFullCapacity = true;
+        }
+
+        _tripRepository.Update(trip);
 
         _reservationRepository.Add(reservation);
     }
@@ -65,7 +82,8 @@ public class ReservationService : IReservationService
             Id = r.ReservationId,
             Trip = $"{r.Trip.Origin} - {r.Trip.Destiny}",
             Date = r.DepartureDate,
-            Price = r.PurchaseAmount,
+            Price = r.PurchasePrice,
+            TonAmount = r.PurchaseAmount,
             Status = r.ReservationStatus
         }).ToList();
 
@@ -108,6 +126,14 @@ public class ReservationService : IReservationService
             throw new Exception("No tienes permiso para eliminar esta reserva.");
         }
 
+        trip.AvailableCapacity += reservation.PurchaseAmount;
+
+        if (trip.AvailableCapacity > 0)
+        {
+            trip.IsFullCapacity = true;
+        }
+
+        _tripRepository.Update(trip);
 
         _reservationRepository.Delete(reservation);
 

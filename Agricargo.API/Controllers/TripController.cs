@@ -1,6 +1,7 @@
 ﻿
 using Agricargo.Application.Interfaces;
 using Agricargo.Application.Models.Requests;
+using Agricargo.Application.Models.RequestsM;
 using Agricargo.Application.Services;
 using Agricargo.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -41,10 +42,9 @@ public class TripController : ControllerBase
     }
 
     [HttpGet("getTrips")]
-    [Authorize(Policy = "AllPolicy")]
-    public ActionResult Get()
+    public ActionResult Get([FromQuery] TripSearchRequest tripSearch)
     {
-        return Ok(_tripService.Get());
+        return Ok(_tripService.Get(tripSearch));
     }
 
     [HttpGet("getTrip/{id}")]

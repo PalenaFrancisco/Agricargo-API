@@ -1,7 +1,9 @@
 ﻿
 
 using Agricargo.Application.Interfaces;
+using Agricargo.Application.Models.DTOs;
 using Agricargo.Application.Models.Requests;
+using Agricargo.Application.Models.RequestsM;
 using Agricargo.Domain.Entities;
 using Agricargo.Domain.Interfaces;
 using Agricargo.Infrastructure.Data.Repositories;
@@ -38,22 +40,22 @@ public class TripService : ITripService
 
         bool isShipOwned = _shipService.IsShipOwnedByCompany(tripService.ShipId, userId);
 
-        Ship ship = _shipService.Get(user ,tripService.ShipId);
+        Ship ship = _shipService.Get(user, tripService.ShipId);
 
-        if (!isShipOwned) 
+        if (!isShipOwned)
         {
             throw new UnauthorizedAccessException("Barco no asociado a la empresa");
         }
 
         foreach (var trip in ship.Trips)
         {
-            if ((tripService.DepartureDate <= trip.ArriveDate)&&(tripService.ArriveDate >= trip.DepartureDate)) 
+            if ((tripService.DepartureDate <= trip.ArriveDate) && (tripService.ArriveDate >= trip.DepartureDate))
             {
                 Console.WriteLine(ship);
                 throw new Exception("El barco ya tiene un viaje para esa fecha");
             }
         }
-       
+
         _tripRepository.Add(new Trip
         {
             Origin = tripService.Origin,
@@ -61,18 +63,19 @@ public class TripService : ITripService
             DepartureDate = tripService.DepartureDate,
             ArriveDate = tripService.ArriveDate,
             Price = tripService.Price,
-            ShipId = tripService.ShipId
+            ShipId = tripService.ShipId,
+            AvailableCapacity = ship.Capacity
         });
 
-            
-        
+
+
     }
 
     public void Delete(int id, ClaimsPrincipal user)
     {
         var trip = _tripRepository.Get(id);
 
-        if (trip == null) 
+        if (trip == null)
         {
             throw new Exception("Viaje no encontrado");
         }
@@ -90,15 +93,26 @@ public class TripService : ITripService
         return trip;
     }
 
-    public List<Trip> Get()
+    public List<TripDTO> Get(TripSearchRequest tripSearch)
     {
-        return _tripRepository.Get();
+        return _tripRepository.Get()
+            .Where(t => t.Origin == tripSearch.Origin && t.Destiny == tripSearch.Destination && tripSearch.GrainAmount <= t.AvailableCapacity)
+            .Select(t => new TripDTO
+            {
+                Id = t.Id,
+                Origin = t.Origin,
+                Destination = t.Destiny,
+                PricePerTon = t.Price,
+                DepartureDate = t.DepartureDate,
+                ArriveDate = t.ArriveDate,
+                Capacity = t.AvailableCapacity
+            }).ToList();
     }
 
     public void Update(int id, TripUpdateRequest tripRequest, ClaimsPrincipal user)
     {
         var trip = _tripRepository.Get(id);
-        if (trip == null) 
+        if (trip == null)
         {
             throw new Exception("Viaje no encontrado");
         }
@@ -120,15 +134,15 @@ public class TripService : ITripService
 
     }
 
-    public List<Trip> GetTrips(ClaimsPrincipal user)
+    public List<TripDTO> GetTrips(ClaimsPrincipal user)
     {
         var userId = GetCompanyIdFromUser(user);
 
-        var trips =  _tripRepository.GetCompanyTrips(userId);
+        var trips = _tripRepository.GetCompanyTrips(userId);
 
         if (trips == null || !trips.Any())
         {
-           throw new Exception("No se encontraron viajes para la empresa.");
+            throw new Exception("No se encontraron viajes para la empresa.");
         }
 
         foreach (var trip in trips)
@@ -153,7 +167,17 @@ public class TripService : ITripService
             _tripRepository.Update(trip);
         }
 
-        return trips;
+        return trips.Select(t => new TripDTO
+        {
+            Id = t.Id,
+            Origin = t.Origin,
+            Destination = t.Destiny,
+            PricePerTon = t.Price,
+            DepartureDate = t.DepartureDate,
+            ArriveDate = t.ArriveDate,
+            Capacity = t.Ship.Capacity
+        }).ToList();
     }
+
 
 }

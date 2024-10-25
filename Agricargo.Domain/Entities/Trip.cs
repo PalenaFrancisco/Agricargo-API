@@ -13,6 +13,8 @@ public class Trip
     public string? TripState { get; set; }
     public bool IsFullCapacity { get; set; } = false;
 
+    public float AvailableCapacity { get; set; }
+
     public int ShipId { get; set; }
     public Ship? Ship { get; set; }
 }

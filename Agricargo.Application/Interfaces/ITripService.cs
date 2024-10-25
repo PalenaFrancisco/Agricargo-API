@@ -1,5 +1,7 @@
 ﻿
+using Agricargo.Application.Models.DTOs;
 using Agricargo.Application.Models.Requests;
+using Agricargo.Application.Models.RequestsM;
 using Agricargo.Domain.Entities;
 using System.Security.Claims;
 
@@ -9,8 +11,7 @@ public interface ITripService
 {
     public Trip Get(int id);
 
-    public List<Trip> Get();
-
+    public List<TripDTO> Get(TripSearchRequest tripSearch);
 
     public void Delete(int id, ClaimsPrincipal user);
 
@@ -18,6 +19,6 @@ public interface ITripService
 
     public void Update(int id, TripUpdateRequest tripRequest, ClaimsPrincipal user);
 
-    public List<Trip> GetTrips(ClaimsPrincipal user);
+    public List<TripDTO> GetTrips(ClaimsPrincipal user);
 
 }

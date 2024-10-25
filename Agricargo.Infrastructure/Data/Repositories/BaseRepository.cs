@@ -34,7 +34,7 @@ namespace Agricargo.Infrastructure.Data.Repositories
             return _context.Set<T>().Find(id);
         }
 
-        public List<T> Get()
+        public virtual List<T> Get()
         {
             return _context.Set<T>().ToList();
         }

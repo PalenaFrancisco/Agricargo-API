@@ -16,7 +16,15 @@ public class TripRepository : BaseRepository<Trip>, ITripRepository
     public List<Trip> GetCompanyTrips(Guid companyId)
     {
         return _context.Trips
+        .Include(t => t.Ship)
         .Where(t => t.Ship.CompanyId == companyId)
+        .ToList();
+    }
+
+    public override List<Trip> Get()
+    {
+        return _context.Trips
+        .Include(t => t.Ship)
         .ToList();
     }
 }

@@ -8,7 +8,7 @@ namespace Agricargo.Application.Interfaces;
 
 public interface IReservationService
 {
-    public void AddReservation(ClaimsPrincipal user, int tripId);
+    public void AddReservation(ClaimsPrincipal user, int tripId, float amountReserved);
 
     public List<ReservationDTO> GetClientReservations(ClaimsPrincipal user);
 

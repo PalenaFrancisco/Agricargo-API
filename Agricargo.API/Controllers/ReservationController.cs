@@ -18,11 +18,11 @@ namespace Agricargo.API.Controllers
 
         [HttpPost("addReservation")]
         [Authorize(Policy = "ClientPolicy")]
-        public IActionResult MakeReservation(int tripId)
+        public IActionResult MakeReservation(int tripId, float amountReserved)
         {
             try
             {
-                _reservationService.AddReservation(User, tripId);
+                _reservationService.AddReservation(User, tripId, amountReserved);
                 return Ok("Reserva creada exitosamente");
             }
             catch (Exception ex)
@@ -47,7 +47,7 @@ namespace Agricargo.API.Controllers
             return Ok(clientReservations);
         }
 
-        [HttpGet("deleteReservations/{id}")]
+        [HttpDelete("deleteReservations/{id}")]
         [Authorize(Policy = "AllPolicy")]
         public IActionResult DeleteReservation(int id)
         {

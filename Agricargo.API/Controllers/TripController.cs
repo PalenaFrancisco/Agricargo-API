@@ -44,7 +44,20 @@ public class TripController : ControllerBase
     [HttpGet("getTrips")]
     public ActionResult Get([FromQuery] TripSearchRequest tripSearch)
     {
-        return Ok(_tripService.Get(tripSearch));
+        string searchType;
+        var trips = _tripService.Get(tripSearch, out searchType);
+
+        string message = searchType == "ExactSearch" ? "Búsqueda exacta exitosa:" : "Búsqueda parcial exitosa:";
+
+        if (!trips.Any()) { return Ok("No se encontraron viajes"); }
+
+        var result = new
+        {
+            Message = message,
+            Trips = trips
+        };
+
+        return Ok(result);
     }
 
     [HttpGet("getTrip/{id}")]

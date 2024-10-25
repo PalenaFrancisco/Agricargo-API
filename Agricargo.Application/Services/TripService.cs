@@ -93,10 +93,12 @@ public class TripService : ITripService
         return trip;
     }
 
-    public List<TripDTO> Get(TripSearchRequest tripSearch)
+    public List<TripDTO> Get(TripSearchRequest tripSearch, out string searchType)
     {
-        return _tripRepository.Get()
-            .Where(t => t.Origin == tripSearch.Origin && t.Destiny == tripSearch.Destination && tripSearch.GrainAmount <= t.AvailableCapacity)
+        var exactGet = _tripRepository.Get()
+            .Where(t => t.Origin == tripSearch.Origin
+                        && t.Destiny == tripSearch.Destination
+                        && tripSearch.GrainAmount <= t.AvailableCapacity)
             .Select(t => new TripDTO
             {
                 Id = t.Id,
@@ -106,8 +108,34 @@ public class TripService : ITripService
                 DepartureDate = t.DepartureDate,
                 ArriveDate = t.ArriveDate,
                 Capacity = t.AvailableCapacity
-            }).ToList();
+            })
+            .ToList();
+
+        if (exactGet.Any())
+        {
+            searchType = "ExactSearch";
+            return exactGet;
+        }
+
+        var partialGet = _tripRepository.Get()
+            .Where(t => (t.Origin == tripSearch.Origin || t.Destiny == tripSearch.Destination)
+                        && tripSearch.GrainAmount <= t.AvailableCapacity)
+            .Select(t => new TripDTO
+            {
+                Id = t.Id,
+                Origin = t.Origin,
+                Destination = t.Destiny,
+                PricePerTon = t.Price,
+                DepartureDate = t.DepartureDate,
+                ArriveDate = t.ArriveDate,
+                Capacity = t.AvailableCapacity
+            })
+            .ToList();
+
+        searchType = "PartialSearch";
+        return partialGet;
     }
+
 
     public void Update(int id, TripUpdateRequest tripRequest, ClaimsPrincipal user)
     {

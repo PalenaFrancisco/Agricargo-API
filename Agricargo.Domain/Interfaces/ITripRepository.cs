@@ -6,5 +6,7 @@ namespace Agricargo.Infrastructure.Data.Repositories
     public interface ITripRepository : IBaseRepository<Trip>
     {
         public List<Trip> GetCompanyTrips(Guid companyId);
+
+        public List<Trip> GetTripsOfShip(int id);
     }
 }

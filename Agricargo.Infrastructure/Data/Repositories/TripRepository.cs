@@ -19,4 +19,11 @@ public class TripRepository : BaseRepository<Trip>, ITripRepository
         .Where(t => t.Ship.CompanyId == companyId)
         .ToList();
     }
+
+    public List<Trip> GetTripsOfShip(int id)
+    {
+        return _context.Trips
+            .Where(t => t.ShipId == id)
+            .ToList();
+    }
 }

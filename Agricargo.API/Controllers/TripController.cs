@@ -104,5 +104,20 @@ public class TripController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [HttpGet("getTripsOfShip")]
+    [Authorize(Policy = "AdminPolicy")]
+    public IActionResult GetTripsOfShip(int id)
+    {
+        try
+        {
+            var trips = _tripService.GetTripsOfShips(User, id);
+            return Ok(trips);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
 

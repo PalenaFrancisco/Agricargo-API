@@ -20,4 +20,6 @@ public interface ITripService
 
     public List<Trip> GetTrips(ClaimsPrincipal user);
 
+    public List<Trip> GetTripsOfShips(ClaimsPrincipal user, int id);
+
 }

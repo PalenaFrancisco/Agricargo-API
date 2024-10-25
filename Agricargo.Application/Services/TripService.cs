@@ -156,4 +156,18 @@ public class TripService : ITripService
         return trips;
     }
 
+    public List<Trip> GetTripsOfShips(ClaimsPrincipal user, int id)
+    {
+        var companyId = GetCompanyIdFromUser(user);
+        GetTrips(user);
+        if (_shipService.IsShipOwnedByCompany(id, companyId))
+        {
+            var trips = _tripRepository.GetTripsOfShip(id);
+            return trips;
+        }
+
+        return new List<Trip>();
+
+    }
+
 }

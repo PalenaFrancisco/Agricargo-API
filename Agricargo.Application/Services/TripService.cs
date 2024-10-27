@@ -59,7 +59,7 @@ public class TripService : ITripService
         _tripRepository.Add(new Trip
         {
             Origin = tripService.Origin,
-            Destiny = tripService.Destiny,
+            Destination = tripService.Destination,
             DepartureDate = tripService.DepartureDate,
             ArriveDate = tripService.ArriveDate,
             Price = tripService.Price,
@@ -97,13 +97,13 @@ public class TripService : ITripService
     {
         var exactGet = _tripRepository.Get()
             .Where(t => t.Origin == tripSearch.Origin
-                        && t.Destiny == tripSearch.Destination
+                        && t.Destination == tripSearch.Destination
                         && tripSearch.GrainAmount <= t.AvailableCapacity)
             .Select(t => new TripDTO
             {
                 Id = t.Id,
                 Origin = t.Origin,
-                Destination = t.Destiny,
+                Destination = t.Destination,
                 PricePerTon = t.Price,
                 DepartureDate = t.DepartureDate,
                 ArriveDate = t.ArriveDate,
@@ -118,13 +118,13 @@ public class TripService : ITripService
         }
 
         var partialGet = _tripRepository.Get()
-            .Where(t => (t.Origin == tripSearch.Origin || t.Destiny == tripSearch.Destination)
+            .Where(t => (t.Origin == tripSearch.Origin || t.Destination == tripSearch.Destination)
                         && tripSearch.GrainAmount <= t.AvailableCapacity)
             .Select(t => new TripDTO
             {
                 Id = t.Id,
                 Origin = t.Origin,
-                Destination = t.Destiny,
+                Destination = t.Destination,
                 PricePerTon = t.Price,
                 DepartureDate = t.DepartureDate,
                 ArriveDate = t.ArriveDate,
@@ -146,14 +146,23 @@ public class TripService : ITripService
         }
         var trips = GetTrips(user);
 
-
         if (!trips.Any(t => t.Id == id))
         {
             throw new UnauthorizedAccessException("No tienes permiso a realizar esta accion");
         }
+        Ship ship = _shipService.Get(user, trip.ShipId);
+
+        foreach (var tripOfShip in ship.Trips)
+        {
+            if ((tripRequest.DepartureDate <= tripOfShip.ArriveDate) && (tripRequest.ArriveDate >= tripOfShip.DepartureDate))
+            {
+                Console.WriteLine(ship);
+                throw new Exception("El barco ya tiene un viaje para esa fecha");
+            }
+        }
 
         trip.Origin = tripRequest.Origin;
-        trip.Destiny = tripRequest.Destiny;
+        trip.Destination = tripRequest.Destination;
         trip.DepartureDate = tripRequest.DepartureDate;
         trip.ArriveDate = tripRequest.ArriveDate;
         trip.Price = tripRequest.Price;
@@ -199,7 +208,7 @@ public class TripService : ITripService
         {
             Id = t.Id,
             Origin = t.Origin,
-            Destination = t.Destiny,
+            Destination = t.Destination,
             PricePerTon = t.Price,
             DepartureDate = t.DepartureDate,
             ArriveDate = t.ArriveDate,

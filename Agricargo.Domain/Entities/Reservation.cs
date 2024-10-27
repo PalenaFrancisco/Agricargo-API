@@ -4,7 +4,7 @@ namespace Agricargo.Domain.Entities;
 
 public class Reservation
 {
-    public int ReservationId { get; set; }
+    public int Id { get; set; }
     public float PurchasePrice { get; set; }
     public float PurchaseAmount { get; set; }
     public DateTime PurchaseDate { get; set; }

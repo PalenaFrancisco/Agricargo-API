@@ -27,7 +27,7 @@ public class ShipService : IShipService
 
         var userId = GetIdFromUser(user);
 
-        if (!IsShipOwnedByCompany(ship.ShipId, userId))
+        if (!IsShipOwnedByCompany(ship.Id, userId))
         {
             throw new Exception("No está habilitado para obtener ese barco");
         }
@@ -51,7 +51,7 @@ public class ShipService : IShipService
 
         var userId = GetIdFromUser(user);
 
-        if (!IsShipOwnedByCompany(ship.ShipId, userId))
+        if (!IsShipOwnedByCompany(ship.Id, userId))
         {
             throw new Exception("No está habilitado para borrar ese barco");
         }
@@ -66,6 +66,7 @@ public class ShipService : IShipService
             TypeShip = shipService.TypeShip,
             Capacity = shipService.Capacity,
             Captain = shipService.Captain,
+            ShipPlate = shipService.ShipPlate,
             //Available = shipService.Available,
             CompanyId = GetIdFromUser(user)
         });

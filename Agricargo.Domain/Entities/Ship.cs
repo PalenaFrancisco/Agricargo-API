@@ -10,13 +10,15 @@ public class Ship
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int ShipId { get; set; }
+    public int Id { get; set; }
     [Required]
     public string? TypeShip { get; set; }
     [Required]
     public float Capacity { get; set; }
     [Required]
     public string? Captain { get; set; }
+    [Required]
+    public string? ShipPlate { get; set; }
 
     [JsonIgnore]
     public List<Trip>? Trips { get; set; }

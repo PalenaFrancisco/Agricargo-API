@@ -8,6 +8,6 @@ public class ReservationDTO
     public string? Trip { get; set; }
     public DateTime Date { get; set; }
     public float Price { get; set; }
-    public float TonAmount { get; set; }
+    public float GrainQuantity { get; set; }
     public string? Status { get; set; }
 }

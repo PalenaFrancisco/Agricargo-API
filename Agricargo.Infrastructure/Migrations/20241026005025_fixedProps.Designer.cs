@@ -3,6 +3,7 @@ using System;
 using Agricargo.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agricargo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241026005025_fixedProps")]
+    partial class fixedProps
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -91,10 +94,6 @@ namespace Agricargo.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("CompanyId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ShipPlate")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TypeShip")

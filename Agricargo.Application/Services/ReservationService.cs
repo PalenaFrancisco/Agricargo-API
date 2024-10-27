@@ -28,7 +28,7 @@ public class ReservationService : IReservationService
     {
         var trip = _tripService.Get(tripId);
 
-        if (trip is null || trip.IsFullCapacity)
+        if (trip is null)
         {
             throw new Exception("Viaje no encontrado.");
         }
@@ -60,11 +60,7 @@ public class ReservationService : IReservationService
 
         trip.AvailableCapacity -= amountReserved;
 
-        if (trip.AvailableCapacity <= 0)
-        {
-            trip.IsFullCapacity = true;
-        }
-
+    
         _tripRepository.Update(trip);
 
         _reservationRepository.Add(reservation);
@@ -79,11 +75,11 @@ public class ReservationService : IReservationService
         // Mapea las reservas a DTOs
         var reservationDtos = reservations.Select(r => new ReservationDTO
         {
-            Id = r.ReservationId,
-            Trip = $"{r.Trip.Origin} - {r.Trip.Destiny}",
+            Id = r.Id,
+            Trip = $"{r.Trip.Origin} - {r.Trip.Destination}",
             Date = r.DepartureDate,
             Price = r.PurchasePrice,
-            TonAmount = r.PurchaseAmount,
+            GrainQuantity = r.PurchaseAmount,
             Status = r.ReservationStatus
         }).ToList();
 
@@ -128,10 +124,7 @@ public class ReservationService : IReservationService
 
         trip.AvailableCapacity += reservation.PurchaseAmount;
 
-        if (trip.AvailableCapacity > 0)
-        {
-            trip.IsFullCapacity = true;
-        }
+    
 
         _tripRepository.Update(trip);
 

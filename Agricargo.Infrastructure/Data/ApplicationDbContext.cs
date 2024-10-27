@@ -22,7 +22,7 @@ namespace Agricargo.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Ship>().HasKey(e => e.ShipId);
+            modelBuilder.Entity<Ship>().HasKey(e => e.Id);
 
             modelBuilder.Entity<Ship>()
                 .HasOne(s => s.Company)
@@ -51,16 +51,14 @@ namespace Agricargo.Infrastructure.Data
 
             modelBuilder.Entity<Favorite>()
             .HasOne(f => f.Trip)
-            .WithMany() 
-            .HasForeignKey(f => f.TripId)
-            .OnDelete(DeleteBehavior.Cascade); 
+            .WithMany()
+            .HasForeignKey(f => f.TripId);
 
-        
+
             modelBuilder.Entity<Favorite>()
                 .HasOne(f => f.Client)
-                .WithMany(c => c.Favorites)  
-                .HasForeignKey(f => f.ClientId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(c => c.Favorites)
+                .HasForeignKey(f => f.ClientId);
 
             base.OnModelCreating(modelBuilder);
         }

@@ -6,7 +6,7 @@ namespace Agricargo.Application.Models.Requests;
 
 public class ReservationRequest
 {
-    public int ReservationId { get; set; }
+    public int Id { get; set; }
     public float PurchaseAmount { get; set; }
     public DateTime PurchaseDate { get; set; }
     public DateTime DepartureDate { get; set; }

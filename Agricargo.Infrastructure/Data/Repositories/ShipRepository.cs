@@ -27,7 +27,7 @@ public class ShipRepository : BaseRepository<Ship>, IShipRepository
     {
         return _context.Ships
             .Include(s => s.Trips)
-            .FirstOrDefault(s => s.ShipId == shipId);
+            .FirstOrDefault(s => s.Id == shipId);
     }
 
 }

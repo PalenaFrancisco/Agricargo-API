@@ -111,7 +111,7 @@ namespace Agricargo.Infrastructure.Services
             }
             catch (Exception ex)
             {
-                return false;
+                throw new Exception(ex.Message);
             }
         }
     }

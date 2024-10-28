@@ -4,6 +4,7 @@ using Agricargo.Application.Interfaces;
 using Agricargo.Domain.Entities;
 using Agricargo.Domain.Interfaces;
 using System.Security.Claims;
+using Agricargo.Application.Models.DTOs;
 
 namespace Agricargo.Application.Services;
 
@@ -58,13 +59,18 @@ public class FavoriteService : IFavoriteService
 
     }
 
-    public List<Favorite> GetFavorites(ClaimsPrincipal user)
+    public List<FavoriteDTO> GetFavorites(ClaimsPrincipal user)
     {
         var clientId = GetIdFromUser(user);
 
         var favorites = _favoriteRepository.GetClientFavorites(clientId);
 
-        return favorites;
+        return favorites.Select(fav => new FavoriteDTO
+        {
+            Id = fav.Id,
+            TripId = fav.TripId,
+            ClientId = fav.ClientId
+        }).ToList();
     }
 
     public void DeleteFavorite(ClaimsPrincipal user, int id)

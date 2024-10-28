@@ -90,7 +90,25 @@ public class TripService : ITripService
     public Trip Get(int id)
     {
         var trip = _tripRepository.Get(id);
+
         return trip;
+    }
+
+    public TripDTO GetToDto(int id)
+    {
+        var trip = _tripRepository.Get(id);
+
+
+        return new TripDTO
+        {
+            Id = trip.Id,
+            Origin = trip.Origin,
+            Destination = trip.Destination,
+            PricePerTon = trip.Price,
+            DepartureDate = trip.DepartureDate,
+            ArriveDate = trip.ArriveDate,
+            Capacity = trip.AvailableCapacity
+        };
     }
 
     public List<TripDTO> Get(TripSearchRequest tripSearch, out string searchType)
@@ -161,11 +179,11 @@ public class TripService : ITripService
             }
         }
 
-        trip.Origin = tripRequest.Origin;
-        trip.Destination = tripRequest.Destination;
+        trip.Origin = tripRequest.Origin ?? trip.Origin;
+        trip.Destination = tripRequest.Destination ?? trip.Destination;
         trip.DepartureDate = tripRequest.DepartureDate;
         trip.ArriveDate = tripRequest.ArriveDate;
-        trip.Price = tripRequest.Price;
+        trip.Price = tripRequest.Price != 0 ? tripRequest.Price : trip.Price;
 
         _tripRepository.Update(trip);
 

@@ -9,20 +9,28 @@ namespace Agricargo.Domain.Entities;
 public class Ship
 {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
+
     [Required]
     public string? TypeShip { get; set; }
+
     [Required]
+    [Range(1,int.MaxValue)]
+    [RegularExpression("[-+]?[1-9]*\\.?[0-9]+")]
     public float Capacity { get; set; }
+
     [Required]
+    [RegularExpression(@"^[a-zA-Z\s]+$")]
     public string? Captain { get; set; }
+
     [Required]
+    [RegularExpression(@"^[A-Za-z\d]{8,}$")]
     public string? ShipPlate { get; set; }
 
     [JsonIgnore]
     public List<Trip>? Trips { get; set; }
 
+    //[Required]
     public Guid? CompanyId { get; set; }
     public Company? Company { get; set; }
 

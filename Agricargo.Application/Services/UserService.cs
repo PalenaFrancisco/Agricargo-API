@@ -3,6 +3,7 @@ using Agricargo.Application.Models.Requests;
 using Agricargo.Domain.Entities;
 using Agricargo.Domain.Interfaces;
 using System.Security.Claims;
+using Agricargo.Application.Models.DTOs;
 
 namespace Agricargo.Application.Services
 {
@@ -85,13 +86,26 @@ namespace Agricargo.Application.Services
 
         }
 
-        public User GetUserInfo(ClaimsPrincipal user)
+        public UserDTO GetUserInfo(ClaimsPrincipal user)
         {
             var userId = GetIdFromUser(user);
             var existingUser = _context.FindByGuid(userId);
             if(existingUser != null) 
             {
-                return existingUser;
+                UserDTO userDto = new UserDTO 
+                {
+                    Id = existingUser.Id,
+                    Name = existingUser.Name,
+                    Email = existingUser.Email,
+                    TypeUser = existingUser.TypeUser,
+                };
+
+                if (existingUser is Company compUser)
+                {
+                    userDto.CompanyName = compUser.CompanyName;
+                }
+
+                return userDto;
             }
 
             throw new Exception("No se encontro el usuario");

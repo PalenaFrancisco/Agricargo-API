@@ -49,7 +49,7 @@ public class ShipController : ControllerBase
     [HttpGet("getShip/{id}")]
     public ActionResult GetShip(int id)
     {
-        return Ok(_shipService.Get(User, id));
+        return Ok(_shipService.GetToDto(User, id));
     }
 }
 

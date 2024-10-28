@@ -3,6 +3,7 @@ using System;
 using Agricargo.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agricargo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241028195854_migrationSeeder")]
+    partial class migrationSeeder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -193,19 +196,19 @@ namespace Agricargo.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d609a32a-91ba-495a-900e-9138e6619ad3"),
+                            Id = new Guid("7983ab63-d0ba-412d-97b2-c5170924f4fa"),
                             Email = "pablo@gmail.com",
                             Name = "Pablo",
-                            Password = "$2a$11$ApXY.5ywnPtJ0I1pGb19WOpXuGMQ03MS3HFI2.GWf4rec58VO./se",
+                            Password = "pablo1234",
                             Phone = "19864343",
                             TypeUser = "Client"
                         },
                         new
                         {
-                            Id = new Guid("d63af9c3-34de-44ab-9ea7-98866f260bbb"),
+                            Id = new Guid("48e4c99e-5859-4770-9d6b-8bcd8840f856"),
                             Email = "emi@gmail.com",
                             Name = "Emiliano",
-                            Password = "$2a$11$yNyKVoOe/OX71vxfO434Ruhm6L4D0FvbuW/i8LYcKOQ51XveFwez2",
+                            Password = "emi1234",
                             Phone = "1923486",
                             TypeUser = "Client"
                         });
@@ -224,20 +227,20 @@ namespace Agricargo.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("1f11bb16-72d5-4032-8a3b-6f125d4ee653"),
+                            Id = new Guid("379b0d9e-9042-4136-a4a9-12f430cea28f"),
                             Email = "mario@gmail.com",
                             Name = "Mario Massonnat",
-                            Password = "$2a$11$UYYYIX4OOYOPxYkF/QI9vuJIhiYRdDOdrIkiHh0DVH6FKv9JKOigi",
+                            Password = "mario1234",
                             Phone = "153252",
                             TypeUser = "Admin",
                             CompanyName = "El Maruco CIA"
                         },
                         new
                         {
-                            Id = new Guid("b94d4613-8450-4fef-bdd2-6edc89a30cf3"),
+                            Id = new Guid("0699fa36-bc12-4937-96af-899046fab1d0"),
                             Email = "pale@gmail.com",
                             Name = "Francisco Palena",
-                            Password = "$2a$11$2r2kMNLDl9o2aVg8nuO/Y.etd4ThWIDKHIc8nIxwPd1vQpIa4y6o6",
+                            Password = "pale1234",
                             Phone = "1986",
                             TypeUser = "Admin",
                             CompanyName = "Pale SRL"
@@ -253,10 +256,10 @@ namespace Agricargo.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("ec61c741-5f6d-487e-959e-450e96b465c5"),
+                            Id = new Guid("c09fc353-580d-4515-b3c3-10e73f64dc1b"),
                             Email = "sys_admin@gmail.com",
                             Name = "web master",
-                            Password = "$2a$11$p.Jx14COotRbeLuRS3BtUOeWmPJcTYQRjc9vPZVfVddtuvXtCUesm",
+                            Password = "superadmin1234",
                             Phone = "1242214",
                             TypeUser = "SuperAdmin"
                         });

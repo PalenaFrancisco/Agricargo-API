@@ -4,16 +4,21 @@ using Agricargo.Application.Models.Requests;
 using Agricargo.Domain.Entities;
 using Agricargo.Domain.Interfaces;
 using System.Security.Claims;
+using Agricargo.Application.Models.DTOs;
+using Agricargo.Application.Interfaces;
+using Agricargo.Infrastructure.Data.Repositories;
 
 namespace Agricargo.Application.Services;
 
 public class ShipService : IShipService
 {
     private readonly IShipRepository _shipRepository;
+    private readonly ITripRepository _tripRepository;
 
-    public ShipService(IShipRepository shipRepository)
+    public ShipService(IShipRepository shipRepository, ITripRepository tripRepository)
     {
         _shipRepository = shipRepository;
+        _tripRepository = tripRepository;
     }
 
     public Ship Get(ClaimsPrincipal user, int id)
@@ -34,10 +39,48 @@ public class ShipService : IShipService
 
         return ship;
     }
-    public List<Ship> Get(ClaimsPrincipal user)
+
+    public ShipDTO GetToDto(ClaimsPrincipal user, int id)
+    {
+        var ship = _shipRepository.GetCompanyShip(id);
+
+        if (ship is null)
+        {
+            throw new Exception("El barco no existe");
+        }
+
+        var userId = GetIdFromUser(user);
+
+        if (!IsShipOwnedByCompany(ship.Id, userId))
+        {
+            throw new Exception("No está habilitado para obtener ese barco");
+        }
+
+        ShipDTO shipDto = new ShipDTO
+        {
+            Id = ship.Id,
+            TypeShip = ship.TypeShip,
+            Capacity = ship.Capacity,
+            Captain = ship.Captain,
+            ShipPlate = ship.ShipPlate,
+        };
+
+        return shipDto;
+    }
+
+    public List<ShipDTO> Get(ClaimsPrincipal user)
     {
         var userId = GetIdFromUser(user);
-        return _shipRepository.GetCompanyShips(userId);
+        var ships = _shipRepository.GetCompanyShips(userId);
+
+        return ships.Select(ship => new ShipDTO
+            {
+                Id = ship.Id,
+                TypeShip = ship.TypeShip,
+                Captain = ship.Captain,
+                Capacity = ship.Capacity,
+                ShipPlate = ship.ShipPlate,
+            }).ToList();
     }
 
     public void Delete(ClaimsPrincipal user, int id)
@@ -54,6 +97,14 @@ public class ShipService : IShipService
         if (!IsShipOwnedByCompany(ship.Id, userId))
         {
             throw new Exception("No está habilitado para borrar ese barco");
+        }
+
+        if (ship.Trips != null) 
+        {
+            foreach (var trip in ship.Trips)
+            {
+                _tripRepository.Delete(trip);
+            }
         }
 
         _shipRepository.Delete(ship);
@@ -96,7 +147,6 @@ public class ShipService : IShipService
     }
 
     //------------------------------------------------------
-
     public bool IsShipOwnedByCompany(int shipId, Guid companyId)
     {
         var ship = _shipRepository.Get(shipId);

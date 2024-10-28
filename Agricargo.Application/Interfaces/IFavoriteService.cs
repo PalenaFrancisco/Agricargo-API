@@ -2,6 +2,7 @@
 
 using Agricargo.Domain.Entities;
 using System.Security.Claims;
+using Agricargo.Application.Models.DTOs;
 
 namespace Agricargo.Application.Interfaces;
 
@@ -11,5 +12,5 @@ public interface IFavoriteService
 
     public void DeleteFavorite(ClaimsPrincipal user, int id);
 
-    public List<Favorite> GetFavorites(ClaimsPrincipal user);
+    public List<FavoriteDTO> GetFavorites(ClaimsPrincipal user);
 }

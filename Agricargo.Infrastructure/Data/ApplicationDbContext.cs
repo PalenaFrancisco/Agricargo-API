@@ -60,7 +60,78 @@ namespace Agricargo.Infrastructure.Data
                 .WithMany(c => c.Favorites)
                 .HasForeignKey(f => f.ClientId);
 
+            modelBuilder.Entity<SuperAdmin>().HasData(CreateSuperAdmins());
+            modelBuilder.Entity<Company>().HasData(CreateCompanies());
+            modelBuilder.Entity<Client>().HasData(CreateClients());
+
             base.OnModelCreating(modelBuilder);
+        }
+        private SuperAdmin[] CreateSuperAdmins()
+        {
+            return new SuperAdmin[]
+            {
+                new SuperAdmin
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "web master",
+                    Email = "sys_admin@gmail.com",
+                    Phone = "1242214",
+                    TypeUser = "SuperAdmin",
+                    Password = BCrypt.Net.BCrypt.HashPassword("superadmin1234")
+                }
+            };
+        }
+
+        private Company[] CreateCompanies()
+        {
+            return new Company[]
+            {
+                new Company
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Mario Massonnat",
+                    Email = "mario@gmail.com",
+                    Phone = "153252",
+                    TypeUser = "Admin",
+                    Password = BCrypt.Net.BCrypt.HashPassword("mario1234"),
+                    CompanyName = "El Maruco CIA"
+                },
+                new Company
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Francisco Palena",
+                    Email = "pale@gmail.com",
+                    Phone = "1986",
+                    TypeUser = "Admin",
+                    Password = BCrypt.Net.BCrypt.HashPassword("pale1234"),
+                    CompanyName = "Pale SRL"
+                }
+            };
+        }
+
+        private Client[] CreateClients()
+        {
+            return new Client[]
+            {
+                new Client
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Pablo",
+                    Email = "pablo@gmail.com",
+                    Phone = "19864343",
+                    TypeUser = "Client",
+                    Password = BCrypt.Net.BCrypt.HashPassword("pablo1234")
+                },
+                new Client
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Emiliano",
+                    Email = "emi@gmail.com",
+                    Phone = "1923486",
+                    TypeUser = "Client",
+                    Password = BCrypt.Net.BCrypt.HashPassword("emi1234")
+                }
+            };
         }
     }
 }

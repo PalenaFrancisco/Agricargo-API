@@ -3,6 +3,7 @@ using System;
 using Agricargo.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agricargo.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241028044313_entitiesModify")]
+    partial class entitiesModify
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -189,26 +192,6 @@ namespace Agricargo.Infrastructure.Migrations
                     b.HasBaseType("Agricargo.Domain.Entities.User");
 
                     b.HasDiscriminator().HasValue("Client");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("d609a32a-91ba-495a-900e-9138e6619ad3"),
-                            Email = "pablo@gmail.com",
-                            Name = "Pablo",
-                            Password = "$2a$11$ApXY.5ywnPtJ0I1pGb19WOpXuGMQ03MS3HFI2.GWf4rec58VO./se",
-                            Phone = "19864343",
-                            TypeUser = "Client"
-                        },
-                        new
-                        {
-                            Id = new Guid("d63af9c3-34de-44ab-9ea7-98866f260bbb"),
-                            Email = "emi@gmail.com",
-                            Name = "Emiliano",
-                            Password = "$2a$11$yNyKVoOe/OX71vxfO434Ruhm6L4D0FvbuW/i8LYcKOQ51XveFwez2",
-                            Phone = "1923486",
-                            TypeUser = "Client"
-                        });
                 });
 
             modelBuilder.Entity("Agricargo.Domain.Entities.Company", b =>
@@ -220,28 +203,6 @@ namespace Agricargo.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasDiscriminator().HasValue("Admin");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("1f11bb16-72d5-4032-8a3b-6f125d4ee653"),
-                            Email = "mario@gmail.com",
-                            Name = "Mario Massonnat",
-                            Password = "$2a$11$UYYYIX4OOYOPxYkF/QI9vuJIhiYRdDOdrIkiHh0DVH6FKv9JKOigi",
-                            Phone = "153252",
-                            TypeUser = "Admin",
-                            CompanyName = "El Maruco CIA"
-                        },
-                        new
-                        {
-                            Id = new Guid("b94d4613-8450-4fef-bdd2-6edc89a30cf3"),
-                            Email = "pale@gmail.com",
-                            Name = "Francisco Palena",
-                            Password = "$2a$11$2r2kMNLDl9o2aVg8nuO/Y.etd4ThWIDKHIc8nIxwPd1vQpIa4y6o6",
-                            Phone = "1986",
-                            TypeUser = "Admin",
-                            CompanyName = "Pale SRL"
-                        });
                 });
 
             modelBuilder.Entity("Agricargo.Domain.Entities.SuperAdmin", b =>
@@ -249,17 +210,6 @@ namespace Agricargo.Infrastructure.Migrations
                     b.HasBaseType("Agricargo.Domain.Entities.User");
 
                     b.HasDiscriminator().HasValue("SuperAdmin");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ec61c741-5f6d-487e-959e-450e96b465c5"),
-                            Email = "sys_admin@gmail.com",
-                            Name = "web master",
-                            Password = "$2a$11$p.Jx14COotRbeLuRS3BtUOeWmPJcTYQRjc9vPZVfVddtuvXtCUesm",
-                            Phone = "1242214",
-                            TypeUser = "SuperAdmin"
-                        });
                 });
 
             modelBuilder.Entity("Agricargo.Domain.Entities.Favorite", b =>

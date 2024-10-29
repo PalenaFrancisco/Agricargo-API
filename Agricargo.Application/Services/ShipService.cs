@@ -53,7 +53,7 @@ public class ShipService : IShipService
 
         if (!IsShipOwnedByCompany(ship.Id, userId))
         {
-            throw new Exception("No está habilitado para obtener ese barco");
+            throw new UnauthorizedAccessException("No está habilitado para obtener ese barco");
         }
 
         ShipDTO shipDto = new ShipDTO
@@ -73,14 +73,20 @@ public class ShipService : IShipService
         var userId = GetIdFromUser(user);
         var ships = _shipRepository.GetCompanyShips(userId);
 
-        return ships.Select(ship => new ShipDTO
-            {
-                Id = ship.Id,
-                TypeShip = ship.TypeShip,
-                Captain = ship.Captain,
-                Capacity = ship.Capacity,
-                ShipPlate = ship.ShipPlate,
-            }).ToList();
+        if (ships != null) 
+        {
+            return ships.Select(ship => new ShipDTO
+                {
+                    Id = ship.Id,
+                    TypeShip = ship.TypeShip,
+                    Captain = ship.Captain,
+                    Capacity = ship.Capacity,
+                    ShipPlate = ship.ShipPlate,
+                }).ToList();
+        }
+
+        throw new Exception("No se encontraron barcos");
+
     }
 
     public void Delete(ClaimsPrincipal user, int id)
@@ -96,7 +102,7 @@ public class ShipService : IShipService
 
         if (!IsShipOwnedByCompany(ship.Id, userId))
         {
-            throw new Exception("No está habilitado para borrar ese barco");
+            throw new UnauthorizedAccessException("No está habilitado para borrar ese barco");
         }
 
         if (ship.Trips != null) 
@@ -112,6 +118,15 @@ public class ShipService : IShipService
 
     public void Add(ShipCreateRequest shipService, ClaimsPrincipal user)
     {
+        var ships = _shipRepository.Get();
+
+        var exisitingShip = ships.FirstOrDefault(s => s.ShipPlate == shipService.ShipPlate);
+
+        if (exisitingShip != null) 
+        {
+            throw new Exception("Ya existe un barco con la misma patente.");
+        }
+
         _shipRepository.Add(new Ship
         {
             TypeShip = shipService.TypeShip,
@@ -134,6 +149,16 @@ public class ShipService : IShipService
 
         var userId = GetIdFromUser(user);
 
+        var ships = _shipRepository.Get();
+
+        var exisitingShip = ships.FirstOrDefault(s => s.ShipPlate == shipRequest.ShipPlate);
+
+
+        if (exisitingShip != null) 
+        {
+            throw new Exception("Ya existe un barco con la misma patente.");
+        }
+
         if (ship.CompanyId != userId)
         {
             throw new UnauthorizedAccessException("No tienes permiso para modificar este barco");
@@ -141,6 +166,7 @@ public class ShipService : IShipService
         ship.TypeShip = shipRequest.TypeShip ?? ship.TypeShip;
         ship.Capacity = shipRequest.Capacity != 0 ? shipRequest.Capacity : ship.Capacity;
         ship.Captain = shipRequest.Captain ?? ship.Captain;
+        ship.ShipPlate = shipRequest.ShipPlate ?? ship.ShipPlate;
         //ship.Available = shipRequest.Available;
 
         _shipRepository.Update(ship);

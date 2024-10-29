@@ -20,20 +20,46 @@ namespace Agricargo.API.Controllers
         [HttpGet("getFavorites")]
         public IActionResult Get()
         {
-            return Ok(_favoriteService.GetFavorites(User));
+            try
+            {
+                return Ok(_favoriteService.GetFavorites(User));
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPost("addFavorite")]
         public IActionResult Post(int id)
         {
-            _favoriteService.AddFavorite(User, id);
-            return Ok("Favorito agregado a la lista");
+            try
+            {
+                _favoriteService.AddFavorite(User, id);
+                return Ok("Favorito agregado a la lista");
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
         [HttpDelete("deleteFavorite")]
         public IActionResult Delete(int id)
         {
-            _favoriteService.DeleteFavorite(User, id);
-            return Ok("Favorito eliminado de la lista");
+            try
+            {
+                _favoriteService.DeleteFavorite(User, id);
+                return Ok("Favorito eliminado de la lista");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex) 
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

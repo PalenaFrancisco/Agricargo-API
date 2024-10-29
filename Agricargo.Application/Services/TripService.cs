@@ -89,15 +89,28 @@ public class TripService : ITripService
 
     public Trip Get(int id)
     {
+
         var trip = _tripRepository.Get(id);
+
+
 
         return trip;
     }
 
-    public TripDTO GetToDto(int id)
+    public TripDTO GetToDto(ClaimsPrincipal user, int id)
     {
         var trip = _tripRepository.Get(id);
+        var companyId = GetCompanyIdFromUser(user);
 
+        if (trip.Ship.CompanyId != companyId) 
+        {
+            throw new UnauthorizedAccessException("No esta habilitado a obtener este viaje");
+        }
+
+        if (trip == null) 
+        {
+            throw new Exception("No se encontro un viaje");
+        }
 
         return new TripDTO
         {
@@ -241,12 +254,16 @@ public class TripService : ITripService
         if (_shipService.IsShipOwnedByCompany(id, companyId))
         {
             var trips = _tripRepository.GetTripsOfShip(id);
+            if (trips == null) 
+            {
+                throw new Exception("El barco no tiene viajes");
+            }
+
             return trips;
         }
-
-        return new List<Trip>();
-
+        else 
+        {
+            throw new UnauthorizedAccessException("No tiene permitido obtener esta informacion del barco");
+        }
     }
-
-
 }

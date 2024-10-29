@@ -65,6 +65,11 @@ public class FavoriteService : IFavoriteService
 
         var favorites = _favoriteRepository.GetClientFavorites(clientId);
 
+        if (favorites == null) 
+        {
+            throw new Exception("No se encontraron favoritos");
+        }
+
         return favorites.Select(fav => new FavoriteDTO
         {
             Id = fav.Id,

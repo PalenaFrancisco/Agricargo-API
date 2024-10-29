@@ -11,7 +11,7 @@ public interface ITripService
 {
     public Trip Get(int id);
 
-    public TripDTO GetToDto(int id);
+    public TripDTO GetToDto(ClaimsPrincipal user, int id);
 
     public List<TripDTO> Get(TripSearchRequest tripSearch, out string searchType);
 

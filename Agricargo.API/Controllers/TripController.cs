@@ -63,7 +63,18 @@ public class TripController : ControllerBase
     [HttpGet("getTrip/{id}")]
     public ActionResult GetTrip(int id)
     {
-        return Ok(_tripService.Get(id));
+        try
+        {
+            return Ok(_tripService.GetToDto(User, id));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
+        catch (Exception ex) 
+        {
+            return NotFound(ex.Message); 
+        }
     }
 
     [HttpPut("updateTrip/{id}")]
@@ -127,9 +138,13 @@ public class TripController : ControllerBase
             var trips = _tripService.GetTripsOfShips(User, id);
             return Ok(trips);
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);
         }
     }
 }

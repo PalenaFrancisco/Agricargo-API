@@ -1,31 +1,31 @@
-# Minuta de Relevamiento del Sistema de Gesti�n de Transporte de Granos : �AgriCargo�
+# Minuta de Relevamiento del Sistema de Gestion de Transporte de Granos : |AgriCargo|
 
 - **GitHub**: [Repositorio AgriCargo API](https://github.com/MarucoMass/Agricargo-API)
 - **Participantes**: Massonnat Mario y Francisco Palena
 
 ## 1. Contexto del Proyecto
 
-AgriCargo es una aplicaci�n especializada en la gesti�n del transporte de granos exclusivamente por v�a mar�tima. Su objetivo es conectar a los productores y exportadores de granos con empresas de transporte mar�timo que ofrecen sus servicios, facilitando el proceso de b�squeda, reserva y gesti�n de viajes a trav�s de una interfaz intuitiva y robusta.
+AgriCargo es una aplicacion especializada en la gestion del transporte de granos exclusivamente por via maritima. Su objetivo es conectar a los productores y exportadores de granos con empresas de transporte maritimo que ofrecen sus servicios, facilitando el proceso de busqueda, reserva y gestion de viajes a traves de una interfaz intuitiva y robusta.
 
-El sistema est� dise�ado para gestionar el transporte de granos, facilitando la interacci�n entre los clientes, las empresas de transporte y los administradores. Las principales entidades que participan en el sistema son los Usuarios (Clientes, Empresas, SuperAdministradores), los Viajes y los Transportes (Barcos), Favoritos y Reservas.
+El sistema este diseñado para gestionar el transporte de granos, facilitando la interaccion entre los clientes, las empresas de transporte y los administradores. Las principales entidades que participan en el sistema son los Usuarios (Clientes, Empresas, SuperAdministradores), los Viajes y los Transportes (Barcos), Favoritos y Reservas.
 
-La aplicaci�n utiliza un sistema de autenticaci�n para asegurar que solo usuarios registrados puedan realizar reservas o gestionar barcos.
+La aplicacion utiliza un sistema de autenticacion para asegurar que solo usuarios registrados puedan realizar reservas o gestionar barcos.
 
 ### Funcionalidades Principales
 
-- **B�squeda de Viajes**: Los usuarios pueden buscar viajes disponibles en funci�n de sus necesidades sin necesidad de tener previamente una cuenta. La b�squeda puede realizarse por origen, destino y cantidad a transportar en toneladas.
+- **Busqueda de Viajes**: Los usuarios pueden buscar viajes disponibles en funcion de sus necesidades sin necesidad de tener previamente una cuenta. La busqueda puede realizarse por origen, destino y cantidad a transportar en toneladas.
 
-- **Reserva de Viajes**: Los clientes registrados pueden realizar la reserva de un viaje, visualizar el precio por tonelada de grano y calcular el costo total seg�n la carga que deseen enviar.
+- **Reserva de Viajes**: Los clientes registrados pueden realizar la reserva de un viaje, visualizar el precio por tonelada de grano y calcular el costo total segun la carga que deseen enviar.
 
-- **Favoritos**: La plataforma permite que los clientes guarden ciertos viajes como "favoritos" para consultarlos m�s tarde.
+- **Favoritos**: La plataforma permite que los clientes guarden ciertos viajes como "favoritos" para consultarlos mas tarde.
 
-- **Perfil de Usuario y Gesti�n de Reservas**: Cada cliente puede visualizar y gestionar sus reservas, cancelar reservas antes de la partida y revisar detalles del viaje.
+- **Perfil de Usuario y Gestion de Reservas**: Cada cliente puede visualizar y gestionar sus reservas, cancelar reservas antes de la partida y revisar detalles del viaje.
 
-- **Empresas de Transporte Mar�timo (Companies)**: Las empresas pueden registrarse, cargar sus barcos y gestionar sus viajes en la aplicaci�n.
+- **Empresas de Transporte Maritimo (Companies)**: Las empresas pueden registrarse, cargar sus barcos y gestionar sus viajes en la aplicacion.
 
-- **Gesti�n de Barcos y Viajes**: Las empresas pueden registrar y gestionar barcos con informaci�n relevante, como capacidad y disponibilidad para transportar granos.
+- **Gestion de Barcos y Viajes**: Las empresas pueden registrar y gestionar barcos con informacion relevante, como capacidad y disponibilidad para transportar granos.
 
-- **Sistema de Administraci�n Avanzado (SuperAdmin)**: El SuperAdmin tiene control sobre todos los usuarios, barcos y viajes, supervisando la plataforma y resolviendo disputas o problemas t�cnicos.
+- **Sistema de Administracion Avanzado (SuperAdmin)**: El SuperAdmin tiene control sobre todos los usuarios, barcos y viajes, supervisando la plataforma y resolviendo disputas o problemas tecnicos.
 
 ## 2. Entidades Principales
 
@@ -41,7 +41,7 @@ Representa al cliente que realiza reservas de transporte.
   - Lista de favoritos: `List<Favorite>`
 
 ### 2.3 Company (Usuario Empresa/Admin)
-Representa a la empresa que ofrece servicios de transporte mar�timo.
+Representa a la empresa que ofrece servicios de transporte maritimo.
 - **Atributos**:
   - CompanyName
   - Lista de barcos: `List<Ship>`
@@ -54,26 +54,28 @@ Usuario con permisos avanzados para gestionar toda la plataforma.
 ### 3.1 Favorite (Favoritos)
 Permite a los clientes marcar viajes como favoritos.
 - **Atributos**: Id, TripId, ClientId
-- **Relaci�n**: Relacionado con un cliente y un viaje espec�fico
+- **Relaci�n**: Relacionado con un cliente y un viaje especifico
 
-### 3.2 Reservation (Reservaci�n)
+### 3.2 Reservation (Reservacion)
 Maneja las reservas realizadas por los clientes.
 - **Atributos**: Id, ClientId, Client, TripId, Trip, PurchasePrice, PurchaseAmount, ReservationStatus, purchaseDate, DepartureDate, ArriveDate
-- **Relaci�n**: Relacionada con un cliente y un viaje
+- **Relacion**: Relacionada con un cliente y un viaje
 
 ### 3.3 Trip (Viaje)
 Representa los viajes que ofrecen las empresas.
 - **Atributos**: Id, Origin, Destination, Price, DepartureDate, ArriveDate, TripState, AvailableCapacity, ShipId, Ship
-- **Relaci�n**: Relacionado con un barco espec�fico y puede tener m�ltiples reservas
+- **Relacion**: Relacionado con un barco especifico y puede tener multiples reservas
 
 ### 3.4 Ship (Barco)
 Entidad que representa los barcos disponibles para el transporte.
 - **Atributos**: Id, TypeShip, Capacity, Captain, ShipPlate, AvailabilityStatus, Trips, CompanyId, Company
-- **Relaci�n**: Cada barco puede tener m�ltiples viajes asociados y est� relacionado con una empresa
+- **Relacion**: Cada barco puede tener multiples viajes asociados y esta relacionado con una empresa
 
 ## 4. Relaciones Importantes
 
-- Un **Client** puede tener m�ltiples **Reservations** y **Favorites**.
-- Una **Company** puede tener m�ltiples **Ships**.
-- Un **Ship** puede tener m�ltiples **Trips**.
+- Un **Client** puede tener multiples **Reservations** y **Favorites**.
+- Una **Company** puede tener multiples **Ships**.
+- Un **Ship** puede tener multiples **Trips**.
 - Un **Trip** puede ser favorito de m�ltiples **Clients** y tener m�ltiples **Reservations**.
+
+![Clear architecture](docs/Diagrama-AgriCargo.drawio.png)

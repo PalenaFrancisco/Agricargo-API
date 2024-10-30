@@ -15,11 +15,14 @@ public class TripService : ITripService
 {
     private readonly ITripRepository _tripRepository;
     private readonly IShipService _shipService;
-
-    public TripService(ITripRepository tripRepository, IShipService shipService)
+    private readonly IReservationRepository _reservationRepository;
+    private readonly IFavoriteRepository _favoriteRepository;
+    public TripService(ITripRepository tripRepository, IShipService shipService, IReservationRepository reservationRepository, IFavoriteRepository favoriteRepository)
     {
         _tripRepository = tripRepository;
         _shipService = shipService;
+        _reservationRepository = reservationRepository;
+        _favoriteRepository = favoriteRepository;
     }
 
     private Guid GetCompanyIdFromUser(ClaimsPrincipal user)
@@ -51,7 +54,6 @@ public class TripService : ITripService
         {
             if ((tripService.DepartureDate <= trip.ArriveDate) && (tripService.ArriveDate >= trip.DepartureDate))
             {
-                Console.WriteLine(ship);
                 throw new Exception("El barco ya tiene un viaje para esa fecha");
             }
         }
@@ -66,9 +68,6 @@ public class TripService : ITripService
             ShipId = tripService.ShipId,
             AvailableCapacity = ship.Capacity
         });
-
-
-
     }
 
     public void Delete(int id, ClaimsPrincipal user)
@@ -84,15 +83,29 @@ public class TripService : ITripService
         {
             throw new UnauthorizedAccessException("No tienes permiso de eliminar este viaje");
         }
+
+        if (_reservationRepository.TripHasAReservation(id))
+        {
+            throw new Exception("Este viaje tiene una reserva no se puede borrar");
+        }
+
+        var favorites = _favoriteRepository.Get().Where(f => f.TripId == id);
+
+        if (favorites is not null)
+        {
+            foreach (var favorite in favorites)
+            {
+                _favoriteRepository.Delete(favorite);
+            }
+        }
+
         _tripRepository.Delete(trip);
+
     }
 
     public Trip Get(int id)
     {
-
         var trip = _tripRepository.Get(id);
-
-
 
         return trip;
     }
@@ -102,12 +115,12 @@ public class TripService : ITripService
         var trip = _tripRepository.Get(id);
         var companyId = GetCompanyIdFromUser(user);
 
-        if (trip.Ship.CompanyId != companyId) 
+        if (trip.Ship.CompanyId != companyId)
         {
             throw new UnauthorizedAccessException("No esta habilitado a obtener este viaje");
         }
 
-        if (trip == null) 
+        if (trip == null)
         {
             throw new Exception("No se encontro un viaje");
         }
@@ -181,15 +194,26 @@ public class TripService : ITripService
         {
             throw new UnauthorizedAccessException("No tienes permiso a realizar esta accion");
         }
-        Ship ship = _shipService.Get(user, trip.ShipId);
 
-        foreach (var tripOfShip in ship.Trips)
+        if (trip.Ship.Trips.Count() > 1)
         {
-            if ((tripRequest.DepartureDate <= tripOfShip.ArriveDate) && (tripRequest.ArriveDate >= tripOfShip.DepartureDate))
+            foreach (var tripOfShip in trip.Ship.Trips)
             {
-                Console.WriteLine(ship);
-                throw new Exception("El barco ya tiene un viaje para esa fecha");
+                if ((tripRequest.DepartureDate <= tripOfShip.ArriveDate) && (tripRequest.ArriveDate >= tripOfShip.DepartureDate))
+                {
+                    throw new Exception("El barco ya tiene un viaje para esa fecha");
+                }
             }
+        }
+
+        if (trip.TripState == "En curso")
+        {
+            throw new Exception("No se puede modificar el viaje porque está en curso.");
+        }
+
+        if (_reservationRepository.TripHasAReservation(id))
+        {
+            throw new Exception("Este viaje tiene una reserva no se puede modificar");
         }
 
         trip.Origin = tripRequest.Origin ?? trip.Origin;
@@ -254,14 +278,14 @@ public class TripService : ITripService
         if (_shipService.IsShipOwnedByCompany(id, companyId))
         {
             var trips = _tripRepository.GetTripsOfShip(id);
-            if (trips == null) 
+            if (trips == null)
             {
                 throw new Exception("El barco no tiene viajes");
             }
 
             return trips;
         }
-        else 
+        else
         {
             throw new UnauthorizedAccessException("No tiene permitido obtener esta informacion del barco");
         }

@@ -14,11 +14,13 @@ public class ShipService : IShipService
 {
     private readonly IShipRepository _shipRepository;
     private readonly ITripRepository _tripRepository;
+    private readonly IReservationRepository _reservationRepository;
 
-    public ShipService(IShipRepository shipRepository, ITripRepository tripRepository)
+    public ShipService(IShipRepository shipRepository, ITripRepository tripRepository, IReservationRepository reservationRepository)
     {
         _shipRepository = shipRepository;
         _tripRepository = tripRepository;
+        _reservationRepository = reservationRepository;
     }
 
     public Ship Get(ClaimsPrincipal user, int id)
@@ -107,9 +109,14 @@ public class ShipService : IShipService
 
         if (ship.Trips != null) 
         {
+            
             foreach (var trip in ship.Trips)
             {
-                _tripRepository.Delete(trip);
+                if (_reservationRepository.TripHasAReservation(trip.Id)) 
+                {
+                    throw new Exception($"El viaje {trip.Id} no se puede borrar porque tiene una reserva. Accion Cancelada");
+                }
+                    _tripRepository.Delete(trip);
             }
         }
 

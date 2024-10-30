@@ -35,24 +35,50 @@ namespace Agricargo.API.Controllers
         [Authorize(Policy = "ClientPolicy")]
         public IActionResult GetClientReservations()
         {
-            var clientReservations = _reservationService.GetClientReservations(User);
-            return Ok(clientReservations);
+            try
+            {
+
+                var clientReservations = _reservationService.GetClientReservations(User);
+                return Ok(clientReservations);
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("companyReservations")]
         [Authorize(Policy = "AdminPolicy")]
         public IActionResult GetCompanyReservations()
         {
-            var clientReservations = _reservationService.GetCompanyReservations(User);
-            return Ok(clientReservations);
+            try
+            {
+                var clientReservations = _reservationService.GetCompanyReservations(User);
+                return Ok(clientReservations);
+            }
+            catch(Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("deleteReservations/{id}")]
         [Authorize(Policy = "AllPolicy")]
         public IActionResult DeleteReservation(int id)
         {
-            _reservationService.DeleteReservation(id, User);
-            return Ok("Reserva eliminada");
+            try
+            {
+                _reservationService.DeleteReservation(id, User);
+                return Ok("Reserva eliminada");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Agricargo.Infrastructure.Services
         private Guid GetCompanyIdFromUser(ClaimsPrincipal user)
         {
             var userId = user.FindFirst("id")?.Value;
-            Console.WriteLine(userId);
+
             if (!Guid.TryParse(userId, out Guid parsedGuid))
             {
                 throw new UnauthorizedAccessException("Token inválido");

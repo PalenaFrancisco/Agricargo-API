@@ -44,6 +44,11 @@ public class ReservationService : IReservationService
             throw new Exception("Viaje no disponible.");
         }
 
+        if ((trip.DepartureDate - currentDate).TotalDays < 2)
+        {
+            throw new Exception("La reserva debe realizarse al menos dos días antes de la fecha de salida del viaje.");
+        }
+
         var clientId = GetIdFromUser(user);
 
         var reservation = new Reservation
@@ -77,7 +82,7 @@ public class ReservationService : IReservationService
         {
             Id = r.Id,
             Trip = $"{r.Trip.Origin} - {r.Trip.Destination}",
-            Date = r.DepartureDate,
+            Date = r.PurchaseDate,
             Price = r.PurchasePrice,
             GrainQuantity = r.PurchaseAmount,
             Status = r.ReservationStatus
@@ -108,11 +113,12 @@ public class ReservationService : IReservationService
 
         var userId = GetIdFromUser(user);
 
-        if (reservation.ClientId == userId)
+        if (reservation.ClientId != userId)
         {
-            _reservationRepository.Delete(reservation);
-            return;
+            throw new UnauthorizedAccessException("No esta autorizado a realizar esta accion");
         }
+
+        _reservationRepository.Delete(reservation);
 
         var trip = _tripService.Get(reservation.TripId);
         bool isShipOwned = _shipService.IsShipOwnedByCompany(trip.ShipId, userId);
@@ -131,6 +137,9 @@ public class ReservationService : IReservationService
         _reservationRepository.Delete(reservation);
 
     }
+
+ 
+
 
     private Guid GetIdFromUser(ClaimsPrincipal user)
     {

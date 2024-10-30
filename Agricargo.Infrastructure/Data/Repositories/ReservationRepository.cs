@@ -34,4 +34,10 @@ public class ReservationRepository : BaseRepository<Reservation>, IReservationRe
         return reservations;
     }
 
+    public bool TripHasAReservation(int tripId)
+    {
+        return _context.Reservations
+            .Any(r => r.TripId == tripId);
+    }
+
 }
